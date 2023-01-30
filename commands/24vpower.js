@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('12vpower')
+        .setName('24vpower')
         .setDescription('Calculate')
         .addStringOption(option =>
             option.setName('type')
@@ -73,7 +73,7 @@ module.exports = {
                 { name: "Maximum Wattage", value: "" + power_max + "W", inline: true },
                 { name: "Average Amperage", value: "" + amps_avg + "A", inline: false },
                 { name: "Average Wattage", value: "" + power_avg + "W", inline: true },
-                { value: "Data measured by Quindor. https://quinled.info/2020/03/12/digital-led-power-usage/" }
+                { name: "Credits", value: "Data measured by Quindor. https://quinled.info/2020/03/12/digital-led-power-usage/" }
             );
 
         await interaction.reply({ embeds: [exampleEmbed] });
