@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder, Options } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('matrixsegment')
-        .setDescription('Split a Matrix into 4 equal segments')
+        .setDescription('Split a Matrix into 4 equal segments WIP')
         .addIntegerOption(option =>
             option.setName("width")
                 .setDescription("Your matrix width")
