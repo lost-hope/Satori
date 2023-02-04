@@ -27,20 +27,36 @@ module.exports = {
                 .setMinValue(0)
                 .setMaxValue(10)),
     async execute(interaction) {
-        matrix_width = interaction.options.getInteger('width');
-        matrix_height = interaction.options.getInteger('height');
-        v_num = interaction.options.getInteger('vsegments') == null ? 2 : interaction.options.getInteger('vsegments');
-        h_num = interaction.options.getInteger('hsegments') == null ? 2 : interaction.options.getInteger('hsegments');
+        matrixWidth = interaction.options.getInteger('width');
+        matrixHeight = interaction.options.getInteger('height');
+        vNum = interaction.options.getInteger('vsegments') == null ? 2 : interaction.options.getInteger('vsegments');
+        hNum = interaction.options.getInteger('hsegments') == null ? 2 : interaction.options.getInteger('hsegments');
+        vSize = Math.round(matrixHeight / vNum);
+        hSize = Math.round(matrixWidth / hNum);
 
-        vsize = matrix_width / v_num;
-        hsize = matrix_height / h_num;
-        output = "```JS\n{\"on\":true,\"bri\":255,\"transition\":7,\"mainseg\":0,\"seg\":[\n{\"id\":0,\"start\":0,\"stop\":" + matrix_width / 2 + ",\"startY\":0,\"stopY\":" + matrix_height / 2 + "},\n{\"id\":1,\"start\":" + matrix_width / 2 + ",\"stop\":" + matrix_width + ",\"startY\":0,\"stopY\":" + matrix_height / 2 + "},\n{\"id\":2,\"start\":0,\"stop\":" + matrix_width / 2 + ",\"startY\":" + matrix_height / 2 + ",\"stopY\":" + matrix_height + "},\n{\"id\":3,\"start\":" + matrix_width / 2 + ",\"stop\":" + matrix_width + ",\"startY\":" + matrix_height / 2 + ",\"stopY\":" + matrix_height + "}]}\n```"
-        console.log(output);
+        let outputJson = "```JS\n{\"on\":true,\"bri\":255,\"transition\":7,\"mainseg\":0,\"seg\":[\n";
+        let outputLayout = "```"
+        index = 0;
+        for (let h = 0; h < hNum; h++) {
+            for (let w = 0; w < vNum; w++) {
+                outputJson += "{\"id\":" + index + ",\"start\":" + w * vSize + ",\"stop\":" + ((w * vSize) + vSize) + ",\"startY\":" + h * hSize + ",\"stopY\":" + +((h * hSize) + hSize) + "},\n"
+                outputLayout += index + " ";
+                index++;
+            }
+            outputLayout += "\n";
+        }
+        outputLayout += "\n```";
+        outputJson += "]}\n```";
+        console.log(outputJson);
         const exampleEmbed = new EmbedBuilder()
             .setColor(0x0099FF)
             .setTitle('Preset JSON')
             .addFields(
-                { name: "Preset JSON", value: output });
+                { name: "Matrix Size", value: "" + matrixWidth + "x" + matrixHeight, inline: true },
+                { name: "Segment Size", value: "" + vNum + "x" + hNum, inline: true },
+                { name: "Segment Layout", value: outputLayout, inline: true },
+
+                { name: "Preset JSON", value: outputJson });
         await interaction.reply({ embeds: [exampleEmbed] });
     },
 };
