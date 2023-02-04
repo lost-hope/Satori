@@ -70,10 +70,10 @@ module.exports = {
                 { name: "LED Type", value: "" + led_type, inline: true },
                 { name: "Number of LEDs", value: "" + led_num, inline: true },
                 { name: "Maximum Amperage", value: "" + amps_max + "A", inline: false },
-                { name: "Maximum Wattage", value: "" + power_max + "W", inline: true },
+                { name: "Maximum Power", value: "" + power_max + "W", inline: true },
                 { name: "Average Amperage", value: "" + amps_avg + "A", inline: false },
-                { name: "Average Wattage", value: "" + power_avg + "W", inline: true },
-                { name: "Credits", value: "Data measured by Quindor. https://quinled.info/2020/03/12/digital-led-power-usage/" }
+                { name: "Average Power", value: "" + power_avg + "W", inline: true },
+                { name: "Credits", value: "Data measured by Quindor.\nhttps://quinled.info/2020/03/12/digital-led-power-usage/" }
             );
 
         await interaction.reply({ embeds: [exampleEmbed] });
