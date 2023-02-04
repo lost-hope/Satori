@@ -9,13 +9,13 @@ module.exports = {
                 .setDescription("Your matrix width")
                 .setMinValue(0)
                 .setMaxValue(256)
-                .setRequired)
+                .setRequired(true))
         .addIntegerOption(option =>
             option.setName("height")
                 .setDescription("Your matrix height")
                 .setMinValue(0)
                 .setMaxValue(256)
-                .setRequired)
+                .setRequired(true))
         .addIntegerOption(option =>
             option.setName("vsegments")
                 .setDescription("Number of vertical segments")
