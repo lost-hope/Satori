@@ -64,7 +64,7 @@ module.exports = {
         amps_max = Math.round((amps_max + Number.EPSILON) * 100) / 100;
         const exampleEmbed = new EmbedBuilder()
             .setColor(0x0099FF)
-            .setTitle('Estimated Power Requirements (for 12V LEDs)')
+            .setTitle('Estimated Power Requirements (for 24V LEDs)')
             .setDescription('These are extremely rough estimates only!')
             .addFields(
                 { name: "LED Type", value: "" + led_type, inline: true },

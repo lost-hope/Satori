@@ -41,11 +41,15 @@ module.exports = {
             let outputJson = "{\"on\":true,\"bri\":255,\"transition\":7,\"mainseg\":0,\"seg\":[\n";
             let outputLayout = "```"
             index = 0;
-            for (let h = 0; h < hNum; h++) {
-                for (let w = 0; w < vNum; w++) {
-                    outputJson += "{\"id\":" + index + ",\"start\":" + w * vSize + ",\"stop\":" + ((w * vSize) + vSize) + ",\"startY\":" + h * hSize + ",\"stopY\":" + +((h * hSize) + hSize) + "},\n"
+            for (let v = 0; v < vNum; v++) {
+                for (let h = 0; h < hNum; h++) {
+                    outputJson += "{\"id\":" + index + ",\"n\": \"" + index + "\",\"start\":" + h * hSize + ",\"stop\":" + ((h * hSize) + hSize) + ",\"startY\":" + v * vSize + ",\"stopY\":" + +((v * vSize) + vSize) + "}"
                     outputLayout += index + " ";
+                    if (index < (vNum * hNum - 1)) {
+                        outputJson += ",\n";
+                    }
                     index++;
+
                 }
                 outputLayout += "\n";
             }
