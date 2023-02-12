@@ -54,8 +54,8 @@ module.exports = {
             default:
                 break;
         }
-        power_avg = amps_avg * 12;
-        power_max = amps_max * 12;
+        power_avg = amps_avg * 24;
+        power_max = amps_max * 24;
         console.log("" + power_avg + "" + power_max + "" + amps_avg + "" + amps_max);
 
         power_avg = Math.round((power_avg + Number.EPSILON) * 100) / 100;
