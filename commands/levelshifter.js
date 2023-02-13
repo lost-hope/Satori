@@ -9,7 +9,8 @@ module.exports = {
                 .setRequired(false)
                 .addChoices(
                     { name: 'SN74AHCT125', value: 'sn' },
-                    { name: 'TXS0108', value: 'tx8' }
+                    { name: 'TXS0108', value: 'tx8' },
+                    { name: 'Sactrificial Pixel', value: 'sp' }
                 )),
     async execute(interaction) {
         var type = interaction.options.getString('type');
@@ -27,7 +28,13 @@ module.exports = {
                     .setTitle('Wiring of the SN74AHCT125')
                     .setImage('https://cdn.discordapp.com/attachments/757254961640898622/1016351826863460493/shifter.jpg');
                 break;
-
+            case 'sp':
+                embed = new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle('Wiring of the sacrificial pixel method')
+                    .setDescription('By using a Diode in the 5V supply of a single pixel the needed Datalevel is dropped enough, so that the 3.3V of the ESP are enough.\n Be aware that the strip in the picture has the power connection in the center and data on top. Connect according to your strip.')
+                    .setImage('https://media.discordapp.net/attachments/766627051100307477/1074720882246811838/ws-levelshift.png');
+                break;
             default:
                 embed = new EmbedBuilder()
                     .setColor(0x0099FF)
