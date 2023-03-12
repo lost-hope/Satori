@@ -45,13 +45,13 @@ module.exports = {
             .setFooter({ text: "More links to different helpful sites." })
         const page3 = new EmbedBuilder()
             .setColor('Green')
-            .setTitle('Command Help - Page 2')
+            .setTitle('Command Help - Page 3')
             .addFields(
                 { name: "/5vpower [type] [number]", value: "Calculates the needed power and current for a give type and number for 5V LED strips" },
                 { name: "/12vpower [type] [number]", value: "Calculates the needed power and current for a give type and number for 12V LED strips" },
                 { name: "/24vpower [type] [number]", value: "Calculates the needed power and current for a give type and number for 12V LED strips" },
                 { name: "/matrixsegment [width] [height] [vertical segments] [horizontal segment]", value: "Outputs a preset to split up a matrix in multiple segments" },
-                { name: "/akemi ", value: "||POOF!||" },
+                { name: "/avatar ", value: "||POOF!||" },
             )
             .setTimestamp()
             .setFooter({ text: "Calculators and other tools" })
