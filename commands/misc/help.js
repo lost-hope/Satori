@@ -56,21 +56,38 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: "Calculators and other tools" })
 
+        const page4 = new EmbedBuilder()
+            .setColor('DarkBlue')
+            .setTitle('MoonMod')
+            .addFields(
+                { name: "/mmkb", value: "Link to the MoonMod Knowledgebase" },
+                { name: "/mic", value: "MoonMod Microphone Recommendations" },
+                { name: "/mminstall", value: "Links to an alternative webinstaller, that works better with audioreactive versions." },
+                { name: "/mmgithub", value: "Links to the MoonMod Github" },
+            )
+            .setTimestamp()
+            .setFooter({ text: "MoonMod" })
+
         const button = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId("page1")
-                    .setLabel("Page 1")
+                    .setLabel("Help and Links.")
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(true),
                 new ButtonBuilder()
                     .setCustomId("page2")
-                    .setLabel("Page 2")
+                    .setLabel("More links")
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(false),
                 new ButtonBuilder()
                     .setCustomId("page3")
-                    .setLabel("Page 3")
+                    .setLabel("Calculators and Tools")
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(false),
+                new ButtonBuilder()
+                    .setCustomId("page4")
+                    .setLabel("MoonMod")
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(false)
             )
@@ -85,17 +102,26 @@ module.exports = {
                 button.components[0].setDisabled(true);
                 button.components[1].setDisabled(false);
                 button.components[2].setDisabled(false);
+                button.components[3].setDisabled(false);
                 await i.update({ embeds: [page1], components: [button] });
             } else if (i.customId === "page2") {
                 button.components[0].setDisabled(false);
                 button.components[1].setDisabled(true);
                 button.components[2].setDisabled(false);
+                button.components[3].setDisabled(false);
                 await i.update({ embeds: [page2], components: [button] });
             } else if (i.customId === "page3") {
                 button.components[0].setDisabled(false);
                 button.components[1].setDisabled(false);
                 button.components[2].setDisabled(true);
+                button.components[3].setDisabled(false);
                 await i.update({ embeds: [page3], components: [button] });
+            } else if (i.customId === "page4") {
+                button.components[0].setDisabled(false);
+                button.components[1].setDisabled(false);
+                button.components[2].setDisabled(false);
+                button.components[3].setDisabled(true);
+                await i.update({ embeds: [page4], components: [button] });
             }
 
         })
