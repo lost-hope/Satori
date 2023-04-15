@@ -11,7 +11,7 @@ module.exports = {
         const page1 = new EmbedBuilder()
             .setColor('Red')
             .setTitle('General help and most important links')
-            .setDescription('Page 1 - General help and most important links.\nPage 2 - More links to different helpful sites.\nPage 3 - Calculators and other tools\nYou can use the tab key to autocomplete.\nRequired options are in square and optional in round brackets')
+            .setDescription('Page 1 - General help and most important links.\nPage 2 - More links to different helpful sites.\nPage 3 - Calculators and other tools\nPage 4 - Special Links for MoonMod\nYou can use the tab key to autocomplete.\nRequired options are in square and optional in round brackets')
             .addFields(
                 { name: "/help", value: "Displays this help" },
                 { name: "/kb", value: "Links to the knowledgebase (kb for short)" },
