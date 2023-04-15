@@ -14,7 +14,7 @@ module.exports = {
     ,
     async execute(interaction, client) {
         index = 0;
-        const avatarPath = path.join(__dirname.substring(0, __dirname.length - 9), 'akemi');
+        const avatarPath = path.join(__dirname.substring(0, __dirname.length - 14), 'akemi');
         const avatarFiles = fs.readdirSync(avatarPath).filter(file => file.endsWith('.png'));
         if ((interaction.options.getInteger('number') >= 0 && interaction.options.getInteger('number') <= 49) && interaction.options.getInteger('number') != null) {
             index = interaction.options.getInteger('number');
