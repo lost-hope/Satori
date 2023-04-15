@@ -2,8 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, ActivityType } = require('discord.js');
 const { token_dev, token_live, currentset } = require('./config.json');
-const cooldown = new Set();
-const cooldownTime = 60000;
+
 
 var token;
 console.log(`Current set is ${currentset}`);
@@ -17,6 +16,7 @@ const client = new Client({
 });
 
 client.commands = new Collection();
+client.cooldowns = new Collection();
 
 const commandsPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(commandsPath, { withFileTypes: true }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
@@ -35,47 +35,17 @@ for (const folder of commandFolders) {
     }
 }
 
-// When the client is ready, run this code (only once)
-// We use 'c' for the event parameter to keep it separate from the already defined 'client'
-client.once(Events.ClientReady, c => {
-    console.log(`Ready! Logged in as ${c.user.tag}`);
-    client.user.setActivity('Light up the world');
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-});
-
-
-client.on(Events.InteractionCreate, async interaction => {
-    if (!interaction.isChatInputCommand()) return;
-
-    const command = interaction.client.commands.get(interaction.commandName);
-
-    if (!command) {
-        console.error(`No command matching ${interaction.commandName} was found.`);
-        return;
-    }
-    if (interaction.commandName == "avatar") {
-        if (cooldown.has(interaction.user.id)) {
-            interaction.reply({ content: "Please wait for the cooldown to end", ephemeral: true });
-
-        } else {
-            await command.execute(interaction, client);
-            cooldown.add(interaction.user.id);
-            setTimeout(() => {
-                cooldown.delete(interaction.user.id);
-            }, cooldownTime);
-        }
-
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
     } else {
-        try {
-            await command.execute(interaction);
-        } catch (error) {
-            console.error(error);
-            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-        }
+        client.on(event.name, (...args) => event.execute(client, ...args));
     }
-});
-
-
-
+}
 // Log in to Discord with your client's token
 client.login(token);

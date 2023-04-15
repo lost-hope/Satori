@@ -1,4 +1,4 @@
-const { REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, Events, REST, Routes } = require('discord.js');
 const { clientId_dev, clientId_live, guildId_dev, guildId_live, token_dev, token_live, currentset } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -15,19 +15,6 @@ if (currentset == "live") {
     token = token_dev;
     clientId = clientId_dev;
     guildId = guildId_dev;
-}
-
-const commands = [];
-
-const commandsPath = path.join(__dirname, 'commands');
-const commandFolders = fs.readdirSync(commandsPath, { withFileTypes: true }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
-for (const folder of commandFolders) {
-    const folderPath = path.join(commandsPath, folder);
-    const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
-    for (const file of commandFiles) {
-        const command = require(`./commands/${file}`);
-        commands.push(command.data.toJSON());
-    }
 }
 
 // Construct and prepare an instance of the REST module
