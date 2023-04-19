@@ -14,7 +14,7 @@ module.exports = {
                 { name: "Data level output of ESP", value: "The ESP can only output 3.3V.", inline: true },
                 { name: "Conclusion", value: "The output of the ESP is in theory not high enough to drive the WS2812B LEDs. \nA levelshifter does fix that issue by changing the datalevel from 3.3V to 5V." },
                 { name: "But it works without one in Video XY", value: "As said above: \" ...in theory...\". Values from the Datasheet and the reality are two different things. \nThe values in the datasheet mean that it can garantee a good read of a HIGH level at 3.5V or more. It can work below 3.5V, but there is a chance does not get a good read.  " },
-                { name: "And now?", value: "If you want a reliable setup, then integrate a recommended levelshifter. Check the /shift command for those." }
+                { name: "And now?", value: "If you want a reliable setup, then integrate a recommended levelshifter. Check the /shifter command for those." }
             )
         await interaction.reply({ embeds: [exampleEmbed] });
     },
