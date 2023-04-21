@@ -20,7 +20,7 @@ module.exports = {
                 embed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle('Wiring of the TXS0108')
-                    .setImage('https://media.discordapp.net/attachments/719873873071308821/1059968358616940634/image.png');
+                    .setImage('https://media.discordapp.net/attachments/719873873071308821/1098951764276944906/image.png');
                 break;
             case 'sn':
                 embed = new EmbedBuilder()
