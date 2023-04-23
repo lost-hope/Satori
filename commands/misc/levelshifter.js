@@ -20,20 +20,20 @@ module.exports = {
                 embed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle('Wiring of the TXS0108')
-                    .setImage('https://media.discordapp.net/attachments/719873873071308821/1098951764276944906/image.png');
+                    .setImage('https://raw.githubusercontent.com/lost-hope/Satori-Images/main/txs.png');
                 break;
             case 'sn':
                 embed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle('Wiring of the SN74AHCT125')
-                    .setImage('https://cdn.discordapp.com/attachments/757254961640898622/1016351826863460493/shifter.jpg');
+                    .setImage('https://raw.githubusercontent.com/lost-hope/Satori-Images/main/74ahct.jpg');
                 break;
             case 'sp':
                 embed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle('Wiring of the sacrificial pixel method')
                     .setDescription('By using a Diode in the 5V supply of a single pixel the needed Datalevel is dropped enough, so that the 3.3V of the ESP are enough.\n Be aware that the strip in the picture has the power connection in the center and data on top. Connect according to your strip.')
-                    .setImage('https://media.discordapp.net/attachments/766627051100307477/1074720882246811838/ws-levelshift.png');
+                    .setImage('https://raw.githubusercontent.com/lost-hope/Satori-Images/main/sacrificial.png');
                 break;
             default:
                 embed = new EmbedBuilder()
