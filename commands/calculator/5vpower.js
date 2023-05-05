@@ -20,15 +20,28 @@ module.exports = {
             option.setName('number')
                 .setDescription('Enter your number of LEDs')
                 .setRequired(true))
+        .addBooleanOption(option =>
+            option.setName('hidden')
+                .setDescription('Default is a hidden message')
+                .setRequired(false))
 
     ,
     async execute(interaction) {
         led_type = interaction.options.getString('type');
         led_num = interaction.options.getInteger('number');
+        if (interaction.options.getBoolean('hidden') != null) {
+            hidden = interaction.options.getBoolean('hidden');
+        } else {
+            hidden = true;
+            if (interaction.guildId == '473448917040758787' && interaction.channelId == '766627051100307477') {
+                hidden = false;
+            }
+        }
         power_max = 0;
         power_avg = 0;
         amps_max = 0;
         amps_avg = 0;
+
         switch (led_type) {
             case 'WS2812':
                 amps_max = led_num * 0.0434;    //RGB White 100%
@@ -75,6 +88,6 @@ module.exports = {
                 { name: "Credits", value: "Data measured by Quindor. \nhttps://quinled.info/2020/03/12/digital-led-power-usage/" }
             );
 
-        await interaction.reply({ embeds: [exampleEmbed] });
+        await interaction.reply({ embeds: [exampleEmbed], ephemeral: hidden });
     },
 };

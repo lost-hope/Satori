@@ -20,11 +20,23 @@ module.exports = {
             option.setName('number')
                 .setDescription('Enter your number of LEDs')
                 .setRequired(true))
+        .addBooleanOption(option =>
+            option.setName('hidden')
+                .setDescription('Default is a hidden message')
+                .setRequired(false))
 
     ,
     async execute(interaction) {
         led_type = interaction.options.getString('type');
         led_num = interaction.options.getInteger('number');
+        if (interaction.options.getBoolean('hidden') != null) {
+            hidden = interaction.options.getBoolean('hidden');
+        } else {
+            hidden = true;
+            if (interaction.guildId == '473448917040758787' && interaction.channelId == '766627051100307477') {
+                hidden = false;
+            }
+        }
         power_max = 0;
         power_avg = 0;
         amps_max = 0;
@@ -56,7 +68,6 @@ module.exports = {
         }
         power_avg = amps_avg * 12;
         power_max = amps_max * 12;
-        console.log("" + power_avg + "" + power_max + "" + amps_avg + "" + amps_max);
 
         power_avg = Math.round((power_avg + Number.EPSILON) * 100) / 100;
         power_max = Math.round((power_max + Number.EPSILON) * 100) / 100;
@@ -76,6 +87,6 @@ module.exports = {
                 { name: "Credits", value: "Data measured by Quindor.\nhttps://quinled.info/2020/03/12/digital-led-power-usage/" }
             );
 
-        await interaction.reply({ embeds: [exampleEmbed] });
+        await interaction.reply({ embeds: [exampleEmbed], ephemeral: hidden });
     },
 };
