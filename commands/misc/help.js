@@ -19,6 +19,7 @@ module.exports = {
                 { name: "/getting-started", value: "Links to the getting started guide on kb" },
                 { name: "/shifter (type)", value: "Recommended shifters or wiring diagrams for a specific one" },
                 { name: "/wiring", value: "Wiring schematic for digital LEDs" },
+                { name: "/analog", value: "Wiring schematic for analog LEDs" },
                 { name: "/datalevel", value: "Technical explanation for the datalevel" },
             )
             .setTimestamp()
