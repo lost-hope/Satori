@@ -56,8 +56,8 @@ module.exports = {
                 amps_avg = led_num * 0.0296;    //Police All 100%
                 break;
             case 'SK6812':
-                amps_max = led_num * 0.0327;    //RGB White 100%
-                amps_avg = led_num * 0.0147;    //Police All 100%
+                amps_max = led_num * 0.0508;    //RGBW White 100%
+                amps_avg = led_num * 0.02627;   //RGBW White 50%
                 break;
             case 'APA102':
                 amps_max = led_num * 0.0588;    //RGB White 100%
