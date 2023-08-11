@@ -53,6 +53,14 @@ module.exports = {
             } catch (error) {
                 console.error(error);
             }
+        } else if (interaction.isModalSubmit()){
+            command = interaction.client.commands.get('build');
+            try {
+                await command.execute(interaction, client);
+            } catch (error) {
+                console.error(error);
+                await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
+            }
         }
     },
 };
