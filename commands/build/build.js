@@ -64,7 +64,7 @@ module.exports = {
                             console.log(`child process exited with code ${code}`);
                             const firmwarePath = path.join(gitPath, 'build_output', 'firmware', envName + '.bin');
                             const file = new AttachmentBuilder(firmwarePath);
-                            interaction.editReply({ content: '✔️Build sucessful. File is below.', files: [file] })
+                            interaction.editReply({ content: '✅Build sucessful. File is below.', files: [file] })
                         } else {
                             const file = new AttachmentBuilder('commands/build/log.txt');
                             interaction.editReply({ content: '❌Build unsucessful. Logfile is below.', files: [file] })
