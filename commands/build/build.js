@@ -3,6 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextI
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('child_process');
+let isCommandRunning = false;
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,20 +11,25 @@ module.exports = {
         .setDescription('WLED Build bot'),
     async execute(interaction) {
         if (interaction.isChatInputCommand()) {
-            const envInput = new TextInputBuilder()
-                .setCustomId('envInput')
-                .setLabel('Platformio Enviroment Config')
-                .setPlaceholder('[env:esp32]\nextends = env:esp32dev\n...')
-                .setStyle(TextInputStyle.Paragraph);
+            if (isCommandRunning) {
+                interaction.reply('Wait for the other Buildprocess to be finished first')
+            } else {
+                isCommandRunning = true;
+                const envInput = new TextInputBuilder()
+                    .setCustomId('envInput')
+                    .setLabel('Platformio Enviroment Config')
+                    .setPlaceholder('[env:esp32]\nextends = env:esp32dev\n...')
+                    .setStyle(TextInputStyle.Paragraph);
 
-            const actionRow = new ActionRowBuilder().addComponents(envInput);
+                const actionRow = new ActionRowBuilder().addComponents(envInput);
 
-            const modal = new ModalBuilder()
-                .setCustomId('buildModal')
-                .setTitle('WLED Builder Bot')
-                .addComponents(actionRow);
+                const modal = new ModalBuilder()
+                    .setCustomId('buildModal')
+                    .setTitle('WLED Builder Bot')
+                    .addComponents(actionRow);
 
-            await interaction.showModal(modal);
+                await interaction.showModal(modal);
+            }
         } else if (interaction.isModalSubmit()) {
             envStartIndex = interaction.fields.getTextInputValue('envInput').search(/\[.*\]/)
             envEndIndex = interaction.fields.getTextInputValue('envInput').search(']')
@@ -40,7 +46,7 @@ module.exports = {
                     enviromentConfig = '[platformio]\ndefault_envs = ' + envName + '\n\n' + interaction.fields.getTextInputValue('envInput');
                     fs.writeFile(overridePath, enviromentConfig, function (err) { });
                     interaction.editReply('Enviroment Added. Building Firmware.⏳');
-                    const build = spawn('pio', ['run', '-d', gitPath]);
+                    const build = spawn('pio', ['run', '-j 1', '-d', gitPath]);
                     fs.writeFile('commands/build/log.txt', 'Build Log:\n', function (err) { });
                     build.stdout.on("data", data => {
                         fs.appendFile('commands/build/log.txt', data, function (err) { });
@@ -52,7 +58,9 @@ module.exports = {
                         fs.appendFile('commands/build/log.txt', error, function (err) { });
                     });
                     build.on('close', code => {
+
                         if (code == 0) {
+                            isCommandRunning = false;
                             console.log(`child process exited with code ${code}`);
                             const firmwarePath = path.join(gitPath, 'build_output', 'firmware', envName + '.bin');
                             const file = new AttachmentBuilder(firmwarePath);
@@ -64,10 +72,6 @@ module.exports = {
                     });
                 })
             }
-
-
-
-
         }
     },
 };
