@@ -58,16 +58,17 @@ module.exports = {
                         fs.appendFile('commands/build/log.txt', error, function (err) { });
                     });
                     build.on('close', code => {
-
+                        isCommandRunning = false;
                         if (code == 0) {
-                            isCommandRunning = false;
                             console.log(`child process exited with code ${code}`);
                             const firmwarePath = path.join(gitPath, 'build_output', 'firmware', envName + '.bin');
                             const file = new AttachmentBuilder(firmwarePath);
-                            interaction.editReply({ content: '✅Build sucessful. File is below.', files: [file] })
+                            const overrideFile = new AttachmentBuilder(overridePath);
+                            interaction.editReply({ content: '✅Build sucessful. Files are below.', files: [file, overrideFile] })
                         } else {
                             const file = new AttachmentBuilder('commands/build/log.txt');
-                            interaction.editReply({ content: '❌Build unsucessful. Logfile is below.', files: [file] })
+                            const overrideFile = new AttachmentBuilder(overridePath);
+                            interaction.editReply({ content: '❌Build unsucessful. Logfile and Enviroment file are below.', files: [file, overrideFile] })
                         }
                     });
                 })
