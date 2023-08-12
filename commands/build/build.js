@@ -14,7 +14,6 @@ module.exports = {
             if (isCommandRunning) {
                 interaction.reply('Wait for the other Buildprocess to be finished first')
             } else {
-                isCommandRunning = true;
                 const envInput = new TextInputBuilder()
                     .setCustomId('envInput')
                     .setLabel('Platformio Enviroment Config')
@@ -31,6 +30,7 @@ module.exports = {
                 await interaction.showModal(modal);
             }
         } else if (interaction.isModalSubmit()) {
+            isCommandRunning = true;
             envStartIndex = interaction.fields.getTextInputValue('envInput').search(/\[.*\]/)
             envEndIndex = interaction.fields.getTextInputValue('envInput').search(']')
             if (envStartIndex == -1) {
