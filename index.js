@@ -14,7 +14,7 @@ if (currentset == "live") {
 const client = new Client({
     intents: [GatewayIntentBits.Guilds]
 });
-
+fs.writeFile('log.txt', 'Log:', function (err) { });
 client.commands = new Collection();
 client.cooldowns = new Collection();
 

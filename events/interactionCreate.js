@@ -9,6 +9,7 @@ module.exports = {
 
             if (!command) {
                 console.error(`No command matching ${interaction.commandName} was found.`);
+                fs.appendFile('log.txt', `No command matching ${interaction.commandName} was found.`, function (err) { });
                 return;
             }
 
@@ -37,6 +38,7 @@ module.exports = {
                 await command.execute(interaction, client);
             } catch (error) {
                 console.error(error);
+                fs.appendFile('log.txt', error, function (err) { });
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
 
@@ -45,6 +47,7 @@ module.exports = {
 
             if (!command) {
                 console.error(`No command matching ${interaction.commandName} was found.`);
+                console.error(`No command matching ${interaction.commandName} was found.`);
                 return;
             }
 
@@ -52,6 +55,15 @@ module.exports = {
                 await command.autocomplete(interaction);
             } catch (error) {
                 console.error(error);
+            }
+        } else if (interaction.isModalSubmit()) {
+            command = interaction.client.commands.get('build');
+            try {
+                await command.execute(interaction, client);
+            } catch (error) {
+                console.error(error);
+                fs.appendFile('log.txt', error, function (err) { });
+                await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
             }
         }
     },

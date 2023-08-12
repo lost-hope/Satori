@@ -1,0 +1,9 @@
+{
+    "token_live": "Live Bot Token",
+    "token_dev": "Development Bot Token",
+    "clientId_live": "Client ID of live bot",
+    "clientId_dev": "Client ID of development bot",
+    "guildId_live": "Server ID of live bot",
+    "guildId_dev": "Server ID of development bot",
+    "currentset": "dev"
+}
