@@ -34,7 +34,13 @@ module.exports = {
             envStartIndex = interaction.fields.getTextInputValue('envInput').search(/\[.*\]/)
             envEndIndex = interaction.fields.getTextInputValue('envInput').search(']')
             if (envStartIndex == -1) {
-                await interaction.reply('Error finding the Enviroment name')
+                const embed = new EmbedBuilder()
+                    .setTitle('❌')
+                    .setFields(
+                        { name: "Error", value: 'Error finding the Enviroment name' },
+                        { name: "Received Input", value: interaction.fields.getTextInputValue('envInput') }
+                    )
+                await interaction.reply({ embeds: [embed] });
             } else {
                 await interaction.reply('Cloning Repository');
                 envName = interaction.fields.getTextInputValue('envInput').substring(envStartIndex + 5, envEndIndex);
