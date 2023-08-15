@@ -1,5 +1,5 @@
 const { Events, Collection } = require('discord.js');
-
+const fs = require('node:fs');
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -57,13 +57,24 @@ module.exports = {
                 console.error(error);
             }
         } else if (interaction.isModalSubmit()) {
-            command = interaction.client.commands.get('build');
-            try {
-                await command.execute(interaction, client);
-            } catch (error) {
-                console.error(error);
-                fs.appendFile('log.txt', error, function (err) { });
-                await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
+            if (interaction.customId === 'buildModal') {
+                command = interaction.client.commands.get('build');
+                try {
+                    await command.execute(interaction, client);
+                } catch (error) {
+                    console.error(error);
+                    fs.appendFile('log.txt', error, function (err) { });
+                    await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
+                }
+            } else if (interaction.customId === 'mmbuildModal') {
+                command = interaction.client.commands.get('mmbuild');
+                try {
+                    await command.execute(interaction, client);
+                } catch (error) {
+                    console.error(error);
+                    fs.appendFile('log.txt', error, function (err) { });
+                    await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
+                }
             }
         }
     },

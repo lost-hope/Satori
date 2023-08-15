@@ -50,6 +50,7 @@ module.exports = {
             .setTitle('Command Help - Page 3')
             .addFields(
                 { name: "/build", value: "Builds a Firmware with an given enviroment config." },
+                { name: "/mmbuild", value: "Builds a MoonModules Firmware with an given enviroment config." },
                 { name: "/5vpower [type] [number]", value: "Calculates the needed power and current for a give type and number for 5V LED strips" },
                 { name: "/12vpower [type] [number]", value: "Calculates the needed power and current for a give type and number for 12V LED strips" },
                 { name: "/24vpower [type] [number]", value: "Calculates the needed power and current for a give type and number for 12V LED strips" },
