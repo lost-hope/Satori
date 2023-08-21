@@ -40,6 +40,7 @@ module.exports = {
                         { name: "Error", value: 'Error finding the Enviroment name' },
                         { name: "Received Input", value: interaction.fields.getTextInputValue('envInput') }
                     )
+                isCommandRunning = false;
                 await interaction.reply({ embeds: [embed] });
             } else {
                 await interaction.reply('Cloning Repository');
