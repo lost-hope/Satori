@@ -46,7 +46,7 @@ module.exports = {
                 await interaction.reply('Cloning Repository');
                 envName = interaction.fields.getTextInputValue('envInput').substring(envStartIndex + 5, envEndIndex);
                 const gitPath = path.join(__dirname, 'wled');
-                const child = spawn('git', ['clone', 'https://github.com/Aircoookie/WLED', gitPath]);
+                const child = spawn('git', ['pull'], { cwd: gitPath });
                 child.on('close', code => {
                     interaction.editReply('Cloned Repository. Now adding the Enviroment');
                     const overridePath = path.join(gitPath, 'platformio_override.ini');
