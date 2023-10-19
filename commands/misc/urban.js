@@ -9,7 +9,7 @@ module.exports = {
         .addStringOption(option =>
             option.setName('phrase')
                 .setDescription('Phrase to look up.')
-                .setRequired(false)
+                .setRequired(true)
         ),
     async execute(interaction) {
         var phrase = interaction.options.getString('phrase');
