@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('WLED Wiring Help')
             .setURL('https://kno.wled.ge/basics/getting-started/')
             .setDescription('WLED can also control analog LEDs, but you will need additional hardware like MOSFETs for that.\nThere are two recommended MOSFETs, that are working with the ESP, but there are more out there:\n`IRLZ44N`\n`STP55NF06L`\n Below is an pertial circuit. You need one Mosfet per color channel.')
-            .setImage('https://i.ibb.co/86vsym1/image.png');
+            .setImage('https://raw.githubusercontent.com/lost-hope/Satori-Images/main/analog.png');
         await interaction.reply({ embeds: [exampleEmbed] });
     },
 };
