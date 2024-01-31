@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('WLED Wiring Help')
             .setURL('https://kno.wled.ge/basics/getting-started/')
             .setDescription('Here is the recommended method for wiring your LEDs with WLED.')
-            .setImage('https://i.ibb.co/k9Jgr8S/connections.jpg');
+            .setImage('https://raw.githubusercontent.com/lost-hope/Satori-Images/main/wiring.png');
         await interaction.reply({ embeds: [exampleEmbed] });
     },
 };
