@@ -35,6 +35,8 @@ module.exports = {
             setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
             try {
+                fs.appendFile('log.txt',`\n${new Date(Date.now()).toString()} ${interaction.guild} (${interaction.guildId}) : ${interaction.user.username} (${interaction.user.id}) used ${JSON.stringify(command)}`, function (err) { });
+                console.log(`${new Date(Date.now()).toString()} ${interaction.guild} (${interaction.guildId}) : ${interaction.user.username} (${interaction.user.id}) used ${JSON.stringify(command)}`);
                 await command.execute(interaction, client);
             } catch (error) {
                 console.error(error);
