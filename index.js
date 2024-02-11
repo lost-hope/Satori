@@ -14,7 +14,7 @@ if (currentset == "live") {
 const client = new Client({
     intents: [GatewayIntentBits.Guilds]
 });
-fs.appendFile('log.txt', `\n---\nRestart ${new Date(Date.now()).toString()}\n---`, function (err) { });
+fs.appendFile('log.csv', `\n${Date.now()};;;;;;`, function (err) { });
 client.commands = new Collection();
 client.cooldowns = new Collection();
 
