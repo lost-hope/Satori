@@ -32,7 +32,7 @@ module.exports = {
                 embed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle('Wiring of the sacrificial pixel method')
-                    .setDescription('By using a Diode in the 5V supply of a single pixel the needed Datalevel is dropped enough, so that the 3.3V of the ESP are enough.\n Be aware that the strip in the picture has the power connection in the center and data on top. Connect according to your strip.')
+                    .setDescription('By using a Diode in the 5V supply of a single pixel the needed Datalevel is dropped enough, so that the 3.3V of the ESP are enough.')
                     .setImage('https://raw.githubusercontent.com/lost-hope/Satori-Images/main/sacrificial.png');
                 break;
             default:
