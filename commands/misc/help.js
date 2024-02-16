@@ -36,6 +36,7 @@ module.exports = {
                 { name: "/fx", value: "Link to a list of retired effects and replacements" },
                 { name: "/quindor", value: "Quindor's Website" },
                 { name: "/wladi", value: "Wladi's Boards" },
+                { name: "/codm", value: "Prego's Boards" },
                 { name: "/quinwire", value: "Quindor's Wiring Guide" },
                 { name: "/serg", value: "Precompiled binaries made by Serg" },
                 { name: "/sergtin", value: "Serg's Tindie store" },
