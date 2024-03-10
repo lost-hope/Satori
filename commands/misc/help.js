@@ -21,6 +21,7 @@ module.exports = {
                 { name: "/wiring", value: "Wiring schematic for digital LEDs" },
                 { name: "/analog", value: "Wiring schematic for analog LEDs" },
                 { name: "/datalevel", value: "Technical explanation for the datalevel" },
+                { name: "/power", value: "Power and Wiring Calculator" },
             )
             .setTimestamp()
             .setFooter({ text: "General help and most important links." })
