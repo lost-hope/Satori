@@ -9,10 +9,14 @@ module.exports = {
                 .setDescription('Choose a LED Type')
                 .setChoices(
                     { name: 'WS2811', value: 'WS2811' },
-                    { name: 'SK6812', value: 'SK6812' },
+                    { name: 'SK6812 Single', value: 'SK6812 Single' },
+                    { name: 'SK6812 per 6', value: 'SK6812 per 6' },
                     { name: 'TM1814', value: 'TM1814' },
                     { name: 'WS2814', value: 'WS2814' },
-                    { name: 'WS28xx NEON COB-RGB', value: 'WS28xx' },
+                    { name: 'WS2805', value: 'WS2805' },
+                    { name: 'FW1906', value: 'FW1906' },
+                    { name: 'WS2811 COB', value: 'WS2811 COB' },
+                    { name: 'WS2814 COB', value: 'WS2814 COB' }
                 )
                 .setRequired(true)
         )
@@ -43,24 +47,40 @@ module.exports = {
         amps_avg = 0;
         switch (led_type) {
             case 'WS2811':
-                amps_max = led_num * 0.0081875;    //RGB White 100%
-                amps_avg = led_num * 0.00404861;    //Avg Amps per LED
+                amps_max = led_num * 117.9/24/600;    //RGB White 100%
+                amps_avg = led_num * 58.3/24/600;    //Avg Amps per LED
                 break;
-            case 'SK6812':
-                amps_max = led_num * 0.00536528;    //RGB White 100%
-                amps_avg = led_num * 0.002416;    //Avg Amps per LED
+            case 'SK6812 Single':
+                amps_max = led_num * 52.7/24/300;    //RGB White 100%
+                amps_avg = led_num * 52.7/24/300;    //Avg Amps per LED
+                break;
+            case 'SK6812 per 6':
+                amps_max = led_num * 38.63/24/300;    //RGB White 100%
+                amps_avg = led_num * 17.4/24/300;    //Avg Amps per LED
                 break;
             case 'TM1814':
-                amps_max = led_num * 0.013136;    //RGB White 100%
-                amps_avg = led_num * 0.006005;    //Avg Amps per LED
+                amps_max = led_num * 94.58/24/300;    //RGB White 100%
+                amps_avg = led_num * 43.24/24/300;    //Avg Amps per LED
                 break;
             case 'WS2814':
-                amps_max = led_num * 0.00888472;    //RGB White 100%
-                amps_avg = led_num * 0.00361528;    //Avg Amps per LED
+                amps_max = led_num * 84.17/24/300;    //RGB White 100%
+                amps_avg = led_num * 27.02/24/300;    //Avg Amps per LED
                 break;
-            case 'WS28xx':
-                amps_max = led_num * 0.015583;    //RGB White 100%
-                amps_avg = led_num * 0.006083;    //Avg Amps per LED
+            case 'WS2805':
+                amps_max = led_num * 83.01/24/300;    //RGB White 100%
+                amps_avg = led_num * 27.61/24/300;    //Avg Amps per LED
+                break;
+            case 'FW1906':
+                amps_max = led_num * 101.1/24/300;    //RGB White 100%
+                amps_avg = led_num * 31.84/24/300;    //Avg Amps per LED
+                break;
+            case 'WS2811 COB':
+                amps_max = led_num * 112.2/24/1200;    //RGB White 100%
+                amps_avg = led_num * 43.8/24/1200;    //Avg Amps per LED
+                break;
+            case 'WS2814 COB':
+                amps_max = led_num * 111.2/24/1200;    //RGB White 100%
+                amps_avg = led_num * 34.06/24/1200;    //Avg Amps per LED
                 break;
 
             default:

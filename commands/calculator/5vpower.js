@@ -10,9 +10,11 @@ module.exports = {
                 .setChoices(
                     { name: 'WS2812B', value: 'WS2812' },
                     { name: 'WS2812-ECO', value: 'WS2812-ECO' },
-                    { name: 'WS281', value: 'WS2811' },
+                    { name: 'WS2811', value: 'WS2811' },
                     { name: 'SK6812', value: 'SK6812' },
-                    { name: 'APA102', value: 'APA102' }
+                    { name: 'APA102', value: 'APA102' },
+                    { name: 'WS2812 COB', value: 'WS2812 COB' },
+                    { name: 'SK6812 COB', value: 'SK6812 COB' }
                 )
                 .setRequired(true)
         )
@@ -44,24 +46,32 @@ module.exports = {
 
         switch (led_type) {
             case 'WS2812':
-                amps_max = led_num * 0.0434;    //RGB White 100%
-                amps_avg = led_num * 0.0170;    //Police All 100%
+                amps_max = led_num * 65/5/300;    //RGB White 100%
+                amps_avg = led_num * 39.9/5/300;    //LEDs RGB White 50%
                 break;
             case 'WS2812-ECO':
-                amps_max = led_num * 0.0312;    //RGB White 100%
-                amps_avg = led_num * 0.0131;    //Police All 100%
-                break;
-            case 'WS2811':
-                amps_max = led_num * 0.05948;    //RGB White 100%
-                amps_avg = led_num * 0.0296;    //Police All 100%
+                amps_max = led_num * 46.8/5/300;    //RGB White 100%
+                amps_avg = led_num * 24.8/5/300;    //LEDs RGB White 50%
                 break;
             case 'SK6812':
-                amps_max = led_num * 0.0508;    //RGBW White 100%
-                amps_avg = led_num * 0.02627;   //RGBW White 50%
+                amps_max = led_num * 49/5/300;    //RGBW White 100%
+                amps_avg = led_num * 26.3/5/300;   //LEDs RGB White 50%
                 break;
             case 'APA102':
-                amps_max = led_num * 0.0588;    //RGB White 100%
-                amps_avg = led_num * 0.0233;    //Police All 100%
+                amps_max = led_num * 88.1/5/300;    //RGB White 100%
+                amps_avg = led_num * 45.4/5/300;    //LEDs RGB White 50%
+                break;
+            case 'WS2811':
+                amps_max = led_num * 29.74/5/100;    //RGB White 100%
+                amps_avg = led_num * 19.19/5/100;    //LEDs RGB White 50%
+                break;
+            case 'WS2812 COB':
+                amps_max = led_num * 31.33/5/300;    //RGB White 100%
+                amps_avg = led_num * 18.62/5/300;    //LEDs RGB White 50%
+                break;
+            case 'SK6812 COB':
+                amps_max = led_num * 150/5/1660;    //RGB White 100%
+                amps_avg = led_num * 85.55/5/1660;    //LEDs RGB White 50%
                 break;
 
             default:
