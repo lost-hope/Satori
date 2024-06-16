@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, userMention } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,9 +18,9 @@ module.exports = {
             exampleEmbed.setDescription('🚫 Reminder: Please refrain from copying your message to multiple channels without allowing for a reasonable timeframe for a response first.\n👍 Thank you for helping maintain a smooth and respectful communication environment!')
         
         }else{
-            exampleEmbed.setDescription(`🚫 Reminder: Please refrain from copying your message to multiple channels without allowing for a reasonable timeframe for a response first.\n👍 Thank you for helping maintain a smooth and respectful communication environment!\n That is for you: ${interaction.options.getUser('mention')}`)
-        
+            const user = userMention(interaction.options.getUser('mention'));
+            exampleEmbed.setDescription(`🚫 Reminder: Please refrain from copying your message to multiple channels without allowing for a reasonable timeframe for a response first.\n👍 Thank you for helping maintain a smooth and respectful communication environment!\n `)
         }
-        await interaction.reply({ embeds: [exampleEmbed] });
+        await interaction.reply({ embeds: [exampleEmbed]});
     },
 };
