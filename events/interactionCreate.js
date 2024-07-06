@@ -77,6 +77,15 @@ module.exports = {
                     fs.appendFile('log.txt', error, function (err) { });
                     await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
                 }
+            }else if (interaction.customId === 'devbuildModal') {
+                command = interaction.client.commands.get('devbuild');
+                try {
+                    await command.execute(interaction, client);
+                } catch (error) {
+                    console.error(error);
+                    fs.appendFile('log.txt', error, function (err) { });
+                    await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
+                }
             }
         }
     },
