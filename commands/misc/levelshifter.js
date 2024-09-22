@@ -3,7 +3,8 @@ const { SlashCommandBuilder, EmbedBuilder, Options } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('shifter')
-        .setDescription('Information about Levelshifters').addStringOption(option =>
+        .setDescription('Information about Levelshifters')
+        .addStringOption(option =>
             option.setName('type')
                 .setDescription('Choose a type to get the Wiring')
                 .setRequired(false)
