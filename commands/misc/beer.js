@@ -17,7 +17,7 @@ module.exports = {
                 .setRequired(false))
     ,
     async execute(interaction) {
-        let exampleEmbed = null;
+        let embed = null;
         if (interaction.options.getBoolean('surprise') != null) {
             surprise = interaction.options.getBoolean('surprise');
         } else {
@@ -26,22 +26,22 @@ module.exports = {
         if (surprise == true) {
             let response = await fetch("https://api.punkapi.com/v2/beers/random");
             let jsonData = await response.json();
-            exampleEmbed = new EmbedBuilder()
+            embed = new EmbedBuilder()
                 .setColor(0x0099FF)
                 .setTitle(jsonData[0].name)
                 .setImage(jsonData[0].image_url)
                 .setURL(`https://api.punkapi.com/v2/beers/${jsonData[0].id}`)
                 .addFields()
         } else {
-            exampleEmbed = new EmbedBuilder()
+            embed = new EmbedBuilder()
                 .setColor(0x0099FF)
                 .setImage('https://github.com/lost-hope/Satori-Images/blob/main/beer.jpg?raw=true')
                 .addFields()
         }
         if (interaction.options.getUser('mention') != null) {
-            exampleEmbed.setDescription(`${interaction.user} would like ${interaction.options.getUser('mention')} to have a beer`)
+            embed.setDescription(`${interaction.user} would like ${interaction.options.getUser('mention')} to have a beer`)
         }
 
-        await interaction.reply({ embeds: [exampleEmbed] });
+        await interaction.reply({ embeds: [embed] });
     },
 };

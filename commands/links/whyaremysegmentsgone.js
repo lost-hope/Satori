@@ -5,11 +5,11 @@ module.exports = {
         .setName('whyaremysegmentsgone')
         .setDescription('WLED Segments'),
     async execute(interaction) {
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(0x0099FF)
             .setTitle('WLED Segments')
             .setURL('https://kno.wled.ge/features/segments/')
             .setThumbnail('https://raw.githubusercontent.com/Aircoookie/WLED/master/images/wled_logo_akemi.png');
-        await interaction.reply({ embeds: [exampleEmbed] });
+        await interaction.reply({ embeds: [embed] });
     },
 };

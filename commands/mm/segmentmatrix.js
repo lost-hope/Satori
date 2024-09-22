@@ -56,7 +56,7 @@ module.exports = {
             outputLayout += "\n```";
             outputJson += "]}\n";
             let outputField;
-            const exampleEmbed = new EmbedBuilder()
+            const embed = new EmbedBuilder()
                 .setColor(0x0099FF)
                 .setTitle('Preset JSON')
                 .addFields(
@@ -67,13 +67,13 @@ module.exports = {
                 outputJsonSplit = chunkSubstr(outputJson, 1015);
                 console.log(outputJsonSplit);
                 outputJsonSplit.forEach((element, index) => {
-                    exampleEmbed.addFields({ name: "Preset JSON part " + index, value: "```JS\n" + element + "```" });
+                    embed.addFields({ name: "Preset JSON part " + index, value: "```JS\n" + element + "```" });
                 });
             } else {
-                exampleEmbed.addFields({ name: "Preset JSON", value: "```JS\n" + outputJson + "```" });
+                embed.addFields({ name: "Preset JSON", value: "```JS\n" + outputJson + "```" });
             }
             console.log(outputJson);
-            await interaction.reply({ embeds: [exampleEmbed] });
+            await interaction.reply({ embeds: [embed] });
         }
     },
 };

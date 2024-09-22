@@ -93,7 +93,7 @@ module.exports = {
         power_max = Math.round((power_max + Number.EPSILON) * 100) / 100;
         amps_avg = Math.round((amps_avg + Number.EPSILON) * 100) / 100;
         amps_max = Math.round((amps_max + Number.EPSILON) * 100) / 100;
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(0x0099FF)
             .setTitle('Estimated Power Requirements (for 24V LEDs)')
             .setDescription('These are extremely rough estimates only!')
@@ -107,6 +107,6 @@ module.exports = {
                 { name: "Credits", value: "Data measured by Quindor. \nhttps://quinled.info/2020/03/12/digital-led-power-usage/" }
             );
 
-        await interaction.reply({ embeds: [exampleEmbed], ephemeral: hidden });
+        await interaction.reply({ embeds: [embed], ephemeral: hidden });
     },
 };

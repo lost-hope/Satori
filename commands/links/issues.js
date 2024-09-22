@@ -5,10 +5,10 @@ module.exports = {
         .setName('issues')
         .setDescription('WLED Github Issues'),
     async execute(interaction) {
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(0x0099FF)
             .setTitle('WLED GitHub Issues')
             .setURL('https://github.com/Aircoookie/WLED/issues')
-        await interaction.reply({ embeds: [exampleEmbed] });
+        await interaction.reply({ embeds: [embed] });
     },
 };

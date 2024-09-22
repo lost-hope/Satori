@@ -5,7 +5,7 @@ module.exports = {
         .setName('datalevel')
         .setDescription('The mystery of the data level'),
     async execute(interaction) {
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(0x0099FF)
             .setTitle('The mystery of the data level')
             .addFields(
@@ -16,6 +16,6 @@ module.exports = {
                 { name: "But it works without one in Video XY", value: "As said above: \" ...in theory...\". Values from the Datasheet and the reality are two different things. \nThe values in the datasheet mean that it can garantee a good read of a HIGH level at 3.5V or more. It can work below 3.5V, but there is a chance does not get a good read.  " },
                 { name: "And now?", value: "If you want a reliable setup, then integrate a recommended levelshifter. Check the /shifter command for those." }
             )
-        await interaction.reply({ embeds: [exampleEmbed] });
+        await interaction.reply({ embeds: [embed] });
     },
 };
