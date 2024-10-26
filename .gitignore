@@ -135,3 +135,4 @@ commands/build/log.txt
 commands/build/devlog.txt
 log.txt
 log.csv
+log_messages.csv

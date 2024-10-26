@@ -12,7 +12,7 @@ if (currentset == "live") {
     token = token_dev;
 }
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds]
+    intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.Guilds]
 });
 fs.appendFile('log.csv', `\n${Date.now()};;;;;;`, function (err) { });
 client.commands = new Collection();
