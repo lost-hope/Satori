@@ -8,7 +8,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor(0x0099FF)
             .setTitle('WLED Power calculator')
-            .setURL('https://wled-calculator.github.io/?lang=english/');
+            .setURL('https://wled-calculator.github.io/?lang=english');
         await interaction.reply({ embeds: [embed] });
     },
 };
