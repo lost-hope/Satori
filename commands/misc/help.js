@@ -37,6 +37,7 @@ module.exports = {
                 { name: "/fx", value: "Link to a list of retired effects and replacements" },
                 { name: "/quindor", value: "Quindor's Website" },
                 { name: "/wladi", value: "Wladi's Boards" },
+                { name: "/tony", value: "tonyno's Boards" },
                 { name: "/codm", value: "Prego's Boards" },
                 { name: "/quinwire", value: "Quindor's Wiring Guide" },
                 { name: "/serg", value: "Precompiled binaries made by Serg" },
@@ -52,6 +53,7 @@ module.exports = {
             .setTitle('Command Help - Page 3')
             .addFields(
                 { name: "/build", value: "Builds a Firmware with an given enviroment config." },
+                { name: "/devbuild", value: "Builds a Firmware with an given enviroment config from the 0_15 branch." },
                 { name: "/mmbuild", value: "Builds a MoonModules Firmware with an given enviroment config." },
                 { name: "/5vpower [type] [number]", value: "Calculates the needed power and current for a give type and number for 5V LED strips" },
                 { name: "/12vpower [type] [number]", value: "Calculates the needed power and current for a give type and number for 12V LED strips" },
