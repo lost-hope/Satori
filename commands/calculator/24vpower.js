@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('24vpower')
+        .setName('5vpower')
         .setDescription('Calculate')
         .addStringOption(option =>
             option.setName('type')

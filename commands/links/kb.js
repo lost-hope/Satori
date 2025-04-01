@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('kb')
+        .setName('beer')
         .setDescription('WLED Knowledgebase'),
     async execute(interaction) {
         const embed = new EmbedBuilder()
