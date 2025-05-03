@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('shifter')
+        .setName('resistor')
         .setDescription('Resistor in Dataline'),
     async execute(interaction) {
         const embed = new EmbedBuilder()
