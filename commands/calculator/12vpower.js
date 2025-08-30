@@ -70,7 +70,7 @@ module.exports = {
                 amps_max = led_num * 46.69/12/300;    //RGB White 100%
                 amps_avg = led_num * 46.84/12/300;    //Effect 1 (Police All) 100%
                 break;
-            case 'SK6812 single':
+            case 'SK6812 Single':
                 amps_max = led_num * 163.8/12/300;    //RGB+White 100%
                 amps_avg = led_num * 43.25/12/300;    //WLED v14 - Flow 100%
                 break;
