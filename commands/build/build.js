@@ -62,7 +62,7 @@ module.exports = {
                         fs.appendFile('commands/build/log.txt', data, function (err) { });
                     });
                     build.on('error', (error) => {
-                        fs.appendFile('commands/build/log.txt', error, function (err) { });
+                        fs.appendFile('commands/build/log.txt', error.message, function (err) { });
                     });
                     build.on('close', code => {
                         isCommandRunning = false;
