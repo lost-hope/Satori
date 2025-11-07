@@ -68,7 +68,7 @@ module.exports = {
                         isCommandRunning = false;
                         if (code == 0) {
                             console.log(`child process exited with code ${code}`);
-                            const firmwarePath = path.join(gitPath, 'build_output', 'firmware', envName + '.bin');
+                            const firmwarePath = path.join(gitPath, '.pio', 'build', envName,'firmware.bin');
                             const file = new AttachmentBuilder(firmwarePath);
                             const overrideFile = new AttachmentBuilder(overridePath);
                             interaction.editReply({ content: '✅Build sucessful. Files are below.', files: [file, overrideFile] })
