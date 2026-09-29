@@ -130,9 +130,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 config.json
-commands/build/mmlog.txt
-commands/build/log.txt
-commands/build/devlog.txt
+commands/build/wled/
+commands/build/logs/
 log.txt
 log.csv
 log_messages.csv
