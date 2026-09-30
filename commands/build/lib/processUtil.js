@@ -1,5 +1,6 @@
 const { spawn } = require('node:child_process');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 
 const KILL_GRACE_PERIOD_MS = 5000;
@@ -19,6 +20,24 @@ const KILL_GRACE_PERIOD_MS = 5000;
 // üblichen System-Bin-Verzeichnisse unter Linux, falls PATH selbst schon unvollständig ist.
 const resolvedCommandCache = new Map();
 const COMMON_POSIX_BIN_DIRS = ['/usr/local/bin', '/usr/bin', '/bin', '/usr/local/sbin', '/usr/sbin', '/sbin'];
+
+// PlatformIO's eigener Installer (get-platformio.py) legt "pio" nicht in einem der System-
+// Verzeichnisse oben ab, sondern in einer Per-User-venv unter dem Home-Verzeichnis dessen, der
+// die Installation ausgeführt hat - hier läuft der Bot als root, also typischerweise
+// /root/.platformio/penv/bin/pio. pip-User-Installs (z.B. via "pip install --user") landen
+// entsprechend unter ~/.local/bin. Beides deckt COMMON_POSIX_BIN_DIRS nicht ab.
+function userPosixBinDirs() {
+    try {
+        const home = os.homedir();
+        if (!home) return [];
+        return [
+            path.join(home, '.platformio', 'penv', 'bin'),
+            path.join(home, '.local', 'bin'),
+        ];
+    } catch {
+        return [];
+    }
+}
 
 function resolveCommand(cmd) {
     if (/[\\/]/.test(cmd)) return cmd; // bereits ein Pfad, nichts aufzulösen
@@ -42,7 +61,7 @@ function resolveCommand(cmd) {
         }
     } else {
         const pathDirs = (process.env.PATH || '').split(path.delimiter);
-        for (const dir of [...pathDirs, ...COMMON_POSIX_BIN_DIRS]) {
+        for (const dir of [...pathDirs, ...userPosixBinDirs(), ...COMMON_POSIX_BIN_DIRS]) {
             if (!dir) continue;
             const candidate = path.join(dir, cmd);
             try {

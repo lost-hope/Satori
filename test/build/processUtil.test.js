@@ -62,6 +62,31 @@ test('resolveCommand (POSIX-Zweig, simuliert): findet Kommando über ein PATH-Ve
     }
 });
 
+test('resolveCommand (POSIX-Zweig, simuliert): findet Kommando unter ~/.platformio/penv/bin (pio-Installationsort)', () => {
+    const fakeHome = fs.mkdtempSync(path.join(os.tmpdir(), 'resolvecmd-home-'));
+    const pioDir = path.join(fakeHome, '.platformio', 'penv', 'bin');
+    fs.mkdirSync(pioDir, { recursive: true });
+    const cmdName = uniqueCmdName('pio');
+    const cmdPath = path.join(pioDir, cmdName);
+    fs.writeFileSync(cmdPath, '#!/bin/sh\necho hi\n');
+    fs.chmodSync(cmdPath, 0o755);
+
+    const originalHomedir = os.homedir;
+    const originalPath = process.env.PATH;
+    os.homedir = () => fakeHome;
+    // PATH bewusst leer, damit dieser Test wirklich den ~/.platformio/penv/bin-Fallback prüft,
+    // nicht einen zufälligen Treffer über PATH selbst.
+    process.env.PATH = '';
+    try {
+        const result = withPlatform('linux', () => resolveCommand(cmdName));
+        assert.equal(result, cmdPath);
+    } finally {
+        os.homedir = originalHomedir;
+        process.env.PATH = originalPath;
+        fs.rmSync(fakeHome, { recursive: true, force: true });
+    }
+});
+
 test('resolveCommand (POSIX-Zweig, simuliert): unbekanntes Kommando mit leerem PATH fällt auf Originalnamen zurück', () => {
     const cmdName = uniqueCmdName('doesnotexist');
     const originalPath = process.env.PATH;

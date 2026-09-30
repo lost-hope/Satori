@@ -4,9 +4,21 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { fetchAndCheckout, listRemoteRefs, getDefaultBranch, isValidBranchName } = require('../../commands/build/lib/gitOps');
+const { fetchAndCheckout, listRemoteRefs, getDefaultBranch, isValidBranchName, checkRepoExists } = require('../../commands/build/lib/gitOps');
 
 const TIMEOUT_MS = 15000;
+
+// Laufzeit-Check statt process.platform-Annahme: NTFS (Windows) und die Standard-Konfiguration
+// von APFS/HFS+ (macOS) sind case-insensitiv, das Produktivsystem (Linux) ist es normalerweise
+// nicht - aber das ist in allen drei Fällen konfigurierbar, daher lieber direkt prüfen.
+const FS_IS_CASE_SENSITIVE = (() => {
+    const probeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'case-probe-'));
+    const lower = path.join(probeDir, 'probe');
+    fs.mkdirSync(lower);
+    const isSensitive = !fs.existsSync(path.join(probeDir, 'PROBE'));
+    fs.rmSync(probeDir, { recursive: true, force: true });
+    return isSensitive;
+})();
 
 test('isValidBranchName: gültige Namen', () => {
     assert.equal(isValidBranchName('main'), true);
@@ -98,4 +110,38 @@ test('gitOps: fetchAndCheckout meldet sauber, wenn Branch nicht auf dem Remote e
     const result = await fetchAndCheckout({ gitPath: cloneDir, branch: 'does-not-exist', timeoutMs: TIMEOUT_MS });
     assert.equal(result.ok, false);
     assert.match(result.message, /not found on the remote/);
+});
+
+test('checkRepoExists: ok, wenn ein .git-Ordner vorhanden ist', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'checkrepo-'));
+    fs.mkdirSync(path.join(tmpDir, '.git'));
+    try {
+        assert.equal(checkRepoExists(tmpDir).ok, true);
+    } finally {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+});
+
+test('checkRepoExists: klare Fehlermeldung, wenn der Ordner schlicht fehlt', () => {
+    const result = checkRepoExists('/this/path/really/should/not/exist/anywhere');
+    assert.equal(result.ok, false);
+    assert.match(result.message, /WLED checkout not found/);
+});
+
+test('checkRepoExists: erkennt Case-Mismatch-Geschwister und weist explizit darauf hin (z.B. "WLED" statt "wled")', { skip: !FS_IS_CASE_SENSITIVE && 'braucht ein case-sensitives Dateisystem (Produktivsystem: Linux) - hier (Windows/NTFS) ist "WLED" === "wled"' }, () => {
+    // Reproduziert genau den realen Vorfall: "git clone <url>" ohne Zielverzeichnis-Argument
+    // benennt den Ordner nach dem Repo-Namen in der URL ("WLED"), nicht nach dem von uns
+    // erwarteten lowercase "wled" - auf Linux (case-sensitiv) sind das zwei verschiedene Pfade.
+    const parentDir = fs.mkdtempSync(path.join(os.tmpdir(), 'checkrepo-parent-'));
+    const wrongCaseDir = path.join(parentDir, 'WLED');
+    fs.mkdirSync(path.join(wrongCaseDir, '.git'), { recursive: true });
+
+    try {
+        const result = checkRepoExists(path.join(parentDir, 'wled'));
+        assert.equal(result.ok, false);
+        assert.match(result.message, /Found 'WLED'/);
+        assert.match(result.message, /case mismatch/);
+    } finally {
+        fs.rmSync(parentDir, { recursive: true, force: true });
+    }
 });
