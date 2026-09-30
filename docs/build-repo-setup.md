@@ -90,6 +90,13 @@ Siehe `config_sample.json` für alle Keys. Relevant für den Builder:
 ## Manueller Test
 
 ```bash
+mkdir -p test-input test-output
+# Container läuft als non-root "builder"-User mit einer UID, die normalerweise NICHT zum
+# Host-User passt - ohne das hier schlägt das Schreiben von /output/result.json mit
+# EACCES fehl, bevor überhaupt ein Ergebnis zurückkommt. (Der Orchestrator macht das für
+# echte Builds automatisch, siehe dockerRunner.js - hier beim manuellen Test von Hand.)
+chmod 777 test-output
+
 docker run --rm \
   --network satori-builder-net \
   --cap-drop=ALL --security-opt no-new-privileges \

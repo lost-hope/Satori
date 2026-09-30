@@ -63,6 +63,12 @@ async function runBuildContainer({ envInput, branch, onProgress, onLogChunk }) {
     const outputDir = path.join(jobDir, 'output');
     await fsp.mkdir(inputDir, { recursive: true });
     await fsp.mkdir(outputDir, { recursive: true });
+    // Bind-Mount, kein Docker-Volume: der Container schreibt als non-root "builder"-User mit
+    // einer UID, die i.d.R. NICHT mit dem Host-User (hier: root/Orchestrator) übereinstimmt.
+    // Ohne diese Freigabe scheitert buildJob.js beim Schreiben von /output/result.json mit
+    // EACCES, bevor überhaupt ein Ergebnis zurückgemeldet werden kann. inputDir braucht das
+    // nicht (Container mountet es :ro und muss nur lesen, 755 reicht dafür).
+    await fsp.chmod(outputDir, 0o777);
     await fsp.writeFile(path.join(inputDir, 'job.json'), JSON.stringify({ envInput, branch }));
 
     const containerName = `satori-build-${jobId}`;

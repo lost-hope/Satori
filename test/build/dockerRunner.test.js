@@ -50,3 +50,21 @@ test('runBuildContainer: schreibt envInput/branch unverändert in input/job.json
     await result.cleanup();
     assert.equal(fsSync.existsSync(path.join(WORKSPACE_ROOT, newJobId)), false);
 });
+
+test('runBuildContainer: macht das output-Verzeichnis für den non-root Container-User beschreibbar (0o777)', { skip: process.platform === 'win32' && 'fs.chmod setzt Unix-Rechte-Bits unter Windows nicht zuverlässig' }, async () => {
+    const jobDirsBefore = new Set(fsSync.existsSync(WORKSPACE_ROOT) ? fsSync.readdirSync(WORKSPACE_ROOT) : []);
+
+    const result = await runBuildContainer({
+        envInput: '[env:esp32dev]\nboard = esp32dev',
+        branch: 'main',
+    });
+
+    const jobDirsAfter = fsSync.readdirSync(WORKSPACE_ROOT);
+    const newJobId = jobDirsAfter.find((id) => !jobDirsBefore.has(id));
+
+    const outputDir = path.join(WORKSPACE_ROOT, newJobId, 'output');
+    const mode = (await fs.stat(outputDir)).mode & 0o777;
+    assert.equal(mode, 0o777, `Bind-Mount-Output muss für eine fremde UID im Container beschreibbar sein, war aber ${mode.toString(8)}`);
+
+    await result.cleanup();
+});
