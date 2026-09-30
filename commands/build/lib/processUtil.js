@@ -4,31 +4,57 @@ const path = require('node:path');
 
 const KILL_GRACE_PERIOD_MS = 5000;
 
-// Node/libuv lösen unter Windows bare Kommandonamen (ohne Extension) beim direkten spawn()
-// (ohne shell:true) nicht zuverlässig über PATH auf - manche Tools funktionieren trotzdem
-// (vermutlich über eine "App Paths"-Registry-Registrierung, z.B. git.exe), andere echten .exe
-// auf PATH (z.B. pio.exe, pip-/venv-installiert) scheitern reproduzierbar mit ENOENT, obwohl die
-// Datei nachweislich existiert. Statt global shell:true zu setzen (unnötiges Injection-Risiko
-// über cmd.exe-Quoting), wird der volle Pfad hier einmalig selbst aufgelöst und gecacht.
+// Node/libuv lösen bare Kommandonamen (ohne Pfad) beim direkten spawn() (ohne shell:true) nicht
+// immer zuverlässig über process.env.PATH auf:
+// - Windows: manche Tools funktionieren trotzdem bare (vermutlich über eine "App Paths"-Registry-
+//   Registrierung, z.B. git.exe), andere echten .exe auf PATH (z.B. pio.exe, pip-/venv-
+//   installiert) scheitern reproduzierbar mit ENOENT, obwohl die Datei nachweislich existiert.
+// - Linux/PM2: der PM2-Daemon läuft oft mit einer anderen (minimaleren) Umgebung als die
+//   interaktive Shell, in der man z.B. manuell "git clone" getestet hat (PM2 cached die Umgebung
+//   vom Start des Daemons/Systemd-Unit; ein simples "pm2 restart" reicht dafür oft nicht) - selbst
+//   ein systemweit installiertes git kann so mit ENOENT scheitern, weil process.env.PATH im
+//   PM2-Prozess git's Verzeichnis schlicht nicht enthält.
+// Statt global shell:true zu setzen (unnötiges Injection-Risiko über z.B. cmd.exe-Quoting), wird
+// der volle Pfad hier einmalig selbst aufgelöst und gecacht - inkl. eines Fallbacks auf die
+// üblichen System-Bin-Verzeichnisse unter Linux, falls PATH selbst schon unvollständig ist.
 const resolvedCommandCache = new Map();
+const COMMON_POSIX_BIN_DIRS = ['/usr/local/bin', '/usr/bin', '/bin', '/usr/local/sbin', '/usr/sbin', '/sbin'];
 
 function resolveCommand(cmd) {
-    if (process.platform !== 'win32') return cmd;
-    if (/[\\/]/.test(cmd) || /\.(exe|cmd|bat|com)$/i.test(cmd)) return cmd;
+    if (/[\\/]/.test(cmd)) return cmd; // bereits ein Pfad, nichts aufzulösen
     if (resolvedCommandCache.has(cmd)) return resolvedCommandCache.get(cmd);
 
-    const pathDirs = (process.env.PATH || process.env.Path || '').split(path.delimiter);
-    const extensions = (process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM').split(';');
     let resolved = cmd;
-    outer: for (const dir of pathDirs) {
-        for (const ext of extensions) {
-            const candidate = path.join(dir, cmd + ext.toLowerCase());
-            if (fs.existsSync(candidate)) {
+
+    if (process.platform === 'win32') {
+        if (!/\.(exe|cmd|bat|com)$/i.test(cmd)) {
+            const pathDirs = (process.env.PATH || process.env.Path || '').split(path.delimiter);
+            const extensions = (process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM').split(';');
+            outer: for (const dir of pathDirs) {
+                for (const ext of extensions) {
+                    const candidate = path.join(dir, cmd + ext.toLowerCase());
+                    if (fs.existsSync(candidate)) {
+                        resolved = candidate;
+                        break outer;
+                    }
+                }
+            }
+        }
+    } else {
+        const pathDirs = (process.env.PATH || '').split(path.delimiter);
+        for (const dir of [...pathDirs, ...COMMON_POSIX_BIN_DIRS]) {
+            if (!dir) continue;
+            const candidate = path.join(dir, cmd);
+            try {
+                fs.accessSync(candidate, fs.constants.X_OK);
                 resolved = candidate;
-                break outer;
+                break;
+            } catch {
+                // nicht hier - weitersuchen
             }
         }
     }
+
     resolvedCommandCache.set(cmd, resolved);
     return resolved;
 }
