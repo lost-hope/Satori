@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { extractEnvName, sanitizePlatformioEnv } = require('../../commands/build/lib/iniSanitizer');
+const { extractEnvName, sanitizePlatformioEnv } = require('../lib/iniSanitizer');
 
 test('extractEnvName: findet gültigen Header', () => {
     const { envName, error } = extractEnvName('[env:esp32dev]\nextends = env:esp32dev');
@@ -187,4 +187,108 @@ test('sanitizePlatformioEnv: lehnt unklassifizierbaren custom_usermods-Token ab'
     const rawText = '[env:esp32dev]\ncustom_usermods = foo!bar';
     const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
     assert.equal(result.ok, false);
+});
+
+// --- Härtung nach Dev-Feedback: "anything running user-supplied platformio.ini is vulnerable" ---
+
+test('sanitizePlatformioEnv: lehnt -fplugin in build_flags ab (lädt beliebige .so als GCC-Plugin)', () => {
+    const rawText = '[env:esp32dev]\nbuild_flags = -fplugin=/tmp/evil.so';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+    assert.match(result.violations[0].reason, /disallowed compiler flag/);
+});
+
+test('sanitizePlatformioEnv: lehnt -wrapper in build_flags ab (ersetzt den Compiler-Aufruf komplett)', () => {
+    const rawText = '[env:esp32dev]\nbuild_flags = -wrapper /tmp/evil.sh,-x';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+});
+
+test('sanitizePlatformioEnv: lehnt -B<pfad> in build_flags ab (GCC-Tool-Suche umleiten)', () => {
+    const rawText = '[env:esp32dev]\nbuild_flags = -B/tmp/evil-toolchain';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+});
+
+test('sanitizePlatformioEnv: erlaubt -Bstatic/-Bdynamic (legitime Linker-Keywords, kein Pfad)', () => {
+    const rawText = '[env:esp32dev]\nbuild_flags = -Wl,-Bstatic -Wl,-Bdynamic';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, true);
+});
+
+test('sanitizePlatformioEnv: lehnt --sysroot und -specs in build_flags ab', () => {
+    assert.equal(sanitizePlatformioEnv({ rawText: '[env:esp32dev]\nbuild_flags = --sysroot=/tmp/evil', envName: 'esp32dev' }).ok, false);
+    assert.equal(sanitizePlatformioEnv({ rawText: '[env:esp32dev]\nbuild_flags = -specs=/tmp/evil.specs', envName: 'esp32dev' }).ok, false);
+});
+
+test('sanitizePlatformioEnv: lehnt @response-Dateien in build_flags ab (würden diese Prüfung umgehen)', () => {
+    const rawText = '[env:esp32dev]\nbuild_flags = @/tmp/extra-flags.txt';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+});
+
+test('sanitizePlatformioEnv: gefährliche Flags werden auch in Fortsetzungszeilen von build_flags erkannt', () => {
+    const rawText = '[env:esp32dev]\nbuild_flags = -DFOO=1\n  -fplugin=/tmp/evil.so';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+});
+
+test('sanitizePlatformioEnv: erlaubt normale build_flags unverändert', () => {
+    const rawText = '[env:esp32dev]\nbuild_flags = -DFOO=1 -Wall -O2 -g -std=gnu++17 -mlongcalls';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, true);
+});
+
+test('sanitizePlatformioEnv: lehnt file:// und symlink:// in lib_deps ab', () => {
+    assert.equal(sanitizePlatformioEnv({ rawText: '[env:esp32dev]\nlib_deps = symlink:///root/.ssh', envName: 'esp32dev' }).ok, false);
+    assert.equal(sanitizePlatformioEnv({ rawText: '[env:esp32dev]\nlib_deps = file:///root/Satori/config.json', envName: 'esp32dev' }).ok, false);
+});
+
+test('sanitizePlatformioEnv: lehnt absoluten Pfad in lib_deps ab', () => {
+    const rawText = '[env:esp32dev]\nlib_deps = /root/.ssh';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+});
+
+test('sanitizePlatformioEnv: erlaubt weiterhin normale lib_deps-Registry-/Git-Referenzen', () => {
+    const rawText = '[env:esp32dev]\nlib_deps = fastled/FastLED@^3.6\n  https://github.com/example/usermod.git';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, true);
+});
+
+test('sanitizePlatformioEnv: lehnt symlink:// in custom_usermods ab (bisher nur als "extern" erkannt, nicht geprüft)', () => {
+    const rawText = '[env:esp32dev]\ncustom_usermods = symlink:///root/.ssh';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+    assert.match(result.violations[0].reason, /local path/);
+});
+
+test('sanitizePlatformioEnv: lehnt ".." in build_src_filter ab', () => {
+    const rawText = '[env:esp32dev]\nbuild_src_filter = +<../../etc/passwd>';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+});
+
+test('sanitizePlatformioEnv: erlaubt normale build_src_filter-Muster', () => {
+    const rawText = '[env:esp32dev]\nbuild_src_filter = +<*.cpp> -<utils/*.cpp>';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, true);
+});
+
+test('sanitizePlatformioEnv: lehnt absoluten Pfad in board_build.ldscript ab', () => {
+    const rawText = '[env:esp32dev]\nboard_build.ldscript = /etc/passwd';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+});
+
+test('sanitizePlatformioEnv: lehnt Pfad-artigen Wert in board ab', () => {
+    const rawText = '[env:esp32dev]\nboard = ../../etc/passwd';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, false);
+});
+
+test('sanitizePlatformioEnv: erlaubt normalen board-Identifier', () => {
+    const rawText = '[env:esp32dev]\nboard = esp32dev';
+    const result = sanitizePlatformioEnv({ rawText, envName: 'esp32dev' });
+    assert.equal(result.ok, true);
 });

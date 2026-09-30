@@ -6,11 +6,19 @@
     "guildId_live": "Server ID of live bot",
     "guildId_dev": "Server ID of development bot",
     "currentset": "dev",
+    "wledRepoUrl": "https://github.com/wled/WLED.git",
     "buildConcurrency": 1,
     "pioJobs": 1,
     "buildTimeoutMs": 1200000,
     "gitTimeoutMs": 60000,
     "libFetchTimeoutMs": 300000,
     "maxLogBytes": 5242880,
-    "branchCacheTtlMs": 60000
+    "branchCacheTtlMs": 60000,
+    "dockerImage": "satori-builder:latest",
+    "dockerNetwork": "satori-builder-net",
+    "dockerPioVolume": "satori-pio-cache",
+    "dockerMemoryLimit": "3g",
+    "dockerCpuLimit": "2",
+    "dockerPidsLimit": 512,
+    "dockerTmpfsSize": "2g"
 }

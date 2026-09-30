@@ -1,0 +1,11 @@
+{
+  "name": "satori-builder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sandboxed WLED build worker for the Satori Discord bot. Runs inside an ephemeral, hardened Docker container with no access to the Discord token.",
+  "main": "entrypoint.js",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "dependencies": {}
+}

@@ -132,6 +132,7 @@ dist
 config.json
 commands/build/wled/
 commands/build/logs/
+commands/build/jobs/
 log.txt
 log.csv
 log_messages.csv

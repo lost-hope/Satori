@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
-const { scanFetchedLibs, resolveTrustedUsermodNames } = require('../../commands/build/lib/libScanner');
+const { scanFetchedLibs, resolveTrustedUsermodNames } = require('../lib/libScanner');
 
 async function makeTempGitPath() {
     return fs.mkdtemp(path.join(os.tmpdir(), 'libscan-'));

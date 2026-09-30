@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test \"test/**/*.test.js\""
+    "test": "node --test \"test/**/*.test.js\"",
+    "test:builder": "cd docker/builder && npm test",
+    "test:all": "npm test && npm run test:builder",
+    "docker:build-builder": "docker build -t satori-builder:latest -f docker/builder/Dockerfile docker/builder"
   },
   "author": "",
   "license": "ISC",
