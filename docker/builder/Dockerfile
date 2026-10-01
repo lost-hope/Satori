@@ -16,7 +16,15 @@ RUN python3 -m venv /opt/pio-venv \
     && /opt/pio-venv/bin/pip install --no-cache-dir platformio
 ENV PATH="/opt/pio-venv/bin:${PATH}"
 
-RUN useradd --create-home --home-dir /home/builder --shell /usr/sbin/nologin builder
+# /home/builder/.platformio wird als benanntes Docker-Volume gemountet (persistenter
+# Paket-/Toolchain-Cache über Builds hinweg). Ein benanntes Volume wird beim allerersten Mount
+# leer und root-owned angelegt - liegt am selben Pfad im Image aber bereits ein Verzeichnis mit
+# korrektem Besitzer, kopiert Docker dessen Inhalt (inkl. Rechte) beim ersten Start ins Volume.
+# Ohne das hier scheitert PlatformIO beim Start mit HomeDirPermissionsError, weil "builder" nicht
+# in das root-owned Volume schreiben kann.
+RUN useradd --create-home --home-dir /home/builder --shell /usr/sbin/nologin builder \
+    && mkdir -p /home/builder/.platformio \
+    && chown -R builder:builder /home/builder
 
 WORKDIR /app
 COPY package.json ./
