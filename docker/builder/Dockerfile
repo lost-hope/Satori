@@ -36,7 +36,8 @@ COPY entrypoint.js ./
 ENV WLED_REPO_URL="https://github.com/wled/WLED.git" \
     BUILD_WORK_DIR="/tmp/wled" \
     BUILD_INPUT_DIR="/input" \
-    BUILD_OUTPUT_DIR="/output"
+    BUILD_OUTPUT_DIR="/output" \
+    PLATFORMIO_BUILD_CACHE_DIR="/tmp/pio-buildcache"
 
 USER builder
 
