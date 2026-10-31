@@ -108,18 +108,28 @@ function attachLogs(logPath, extraFiles = []) {
     return [...files, ...extraFiles];
 }
 
-async function handleChatInput(interaction) {
+async function resolveBranchOption(interaction) {
     let branch = interaction.options.getString('branch');
 
     if (branch && !isValidBranchName(branch)) {
-        await interaction.reply({
-            embeds: [errorEmbed('❌', [{ name: 'Error', value: `Invalid branch/tag name: '${branch}'.` }])],
-        });
-        return;
+        return { branch: null, error: `Invalid branch/tag name: '${branch}'.` };
     }
 
     if (!branch) {
         branch = (await getDefaultBranch(WLED_REPO_URL, DEFAULT_BRANCH_LOOKUP_TIMEOUT_MS)) ?? 'main';
+    }
+
+    return { branch, error: null };
+}
+
+async function handleChatInput(interaction) {
+    const { branch, error } = await resolveBranchOption(interaction);
+
+    if (error) {
+        await interaction.reply({
+            embeds: [errorEmbed('❌', [{ name: 'Error', value: error }])],
+        });
+        return;
     }
 
     rememberBranch(interaction.user.id, branch);
@@ -276,4 +286,4 @@ async function runOneBuild(interaction, rawText, branch) {
     }
 }
 
-module.exports = { handleChatInput, handleModalSubmit, autocompleteBranch };
+module.exports = { handleChatInput, handleModalSubmit, autocompleteBranch, runOneBuild, errorEmbed, resolveBranchOption };
