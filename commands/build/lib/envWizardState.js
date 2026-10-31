@@ -5,14 +5,14 @@ const sessionByUser = new Map();
 function createSession(userId, initial, ttlMs) {
   const ttl = ttlMs !== undefined ? ttlMs : DEFAULT_TTL_MS;
   const session = {
-    userId,
-    branch: initial.branch,
     step: 'boardCategory',
     boardCategoryId: null,
     boardId: null,
     selectedFeatureFlags: [],
     selectedUsermods: [],
     generatedIni: null,
+    ...initial,
+    userId,
     expiresAt: Date.now() + ttl,
   };
   sessionByUser.set(userId, session);

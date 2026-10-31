@@ -69,6 +69,16 @@ module.exports = {
                     await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
                 }
             }
+        } else if (interaction.isStringSelectMenu() || interaction.isButton()) {
+            if (interaction.customId.startsWith('envWizard:')) {
+                const command = interaction.client.commands.get('buildenv');
+                try {
+                    await command.handleComponent(interaction);
+                } catch (error) {
+                    console.error(error);
+                    fs.appendFile('log.txt', error, function (err) { });
+                }
+            }
         }
     },
 };
