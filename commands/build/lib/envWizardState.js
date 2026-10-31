@@ -36,7 +36,7 @@ function updateSession(userId, patch) {
     sessionByUser.delete(userId);
     return null;
   }
-  const updated = { ...entry, ...patch };
+  const updated = { ...entry, ...patch, expiresAt: Date.now() + DEFAULT_TTL_MS };
   sessionByUser.set(userId, updated);
   return updated;
 }

@@ -27,7 +27,7 @@ async function handleComponent(interaction) {
     const session = getSession(userId);
 
     if (!session) {
-        const payload = { content: SESSION_EXPIRED_MESSAGE, ephemeral: true };
+        const payload = { content: SESSION_EXPIRED_MESSAGE, components: [], embeds: [] };
         if (typeof interaction.update === 'function') {
             await interaction.update(payload);
         } else {
@@ -114,6 +114,17 @@ async function handleComponent(interaction) {
         clearSession(userId);
         await interaction.update({ content: 'Abgebrochen.', embeds: [], components: [] });
         return;
+    }
+
+    const unknownStepPayload = {
+        content: 'Unbekannter Schritt, bitte `/buildenv` erneut ausführen.',
+        embeds: [],
+        components: [],
+    };
+    if (typeof interaction.update === 'function') {
+        await interaction.update(unknownStepPayload);
+    } else {
+        await interaction.reply(unknownStepPayload);
     }
 }
 
