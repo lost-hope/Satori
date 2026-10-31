@@ -5,7 +5,7 @@ const buildRunner = require('./lib/buildRunner');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('buildenv')
-        .setDescription('Geführte Erstellung einer WLED-Build-Umgebung')
+        .setDescription('Guided creation of a WLED build environment')
         .addStringOption((option) =>
             option
                 .setName('branch')

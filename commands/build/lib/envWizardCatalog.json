@@ -35,28 +35,28 @@
     { "id": "esp32s3_4M_none", "label": "ESP32-S3 (4MB, no PSRAM)", "category": "esp32s3", "defaultUsermods": ["audioreactive"] }
   ],
   "features": [
-    { "flag": "WLED_DISABLE_2D", "label": "2D-Matrix-Unterstützung deaktivieren" },
-    { "flag": "WLED_DISABLE_ADALIGHT", "label": "Adalight-Protokoll deaktivieren" },
-    { "flag": "WLED_DISABLE_ALEXA", "label": "Amazon Alexa deaktivieren" },
-    { "flag": "WLED_DISABLE_BROWNOUT_DET", "label": "Brownout-Detektor deaktivieren" },
-    { "flag": "WLED_DISABLE_ESPNOW", "label": "ESP-NOW deaktivieren" },
-    { "flag": "WLED_DISABLE_FILESYSTEM", "label": "Dateisystem deaktivieren" },
-    { "flag": "WLED_DISABLE_HUESYNC", "label": "Philips-Hue-Sync deaktivieren" },
-    { "flag": "WLED_DISABLE_IMPROV_WIFISCAN", "label": "Improv-WLAN-Scan deaktivieren" },
-    { "flag": "WLED_DISABLE_INFRARED", "label": "Infrarot-Fernbedienung deaktivieren" },
-    { "flag": "WLED_DISABLE_LOXONE", "label": "Loxone-Unterstützung deaktivieren" },
-    { "flag": "WLED_DISABLE_MQTT", "label": "MQTT deaktivieren" },
-    { "flag": "WLED_DISABLE_OTA", "label": "OTA-Updates deaktivieren" },
-    { "flag": "WLED_DISABLE_PARTICLESYSTEM1D", "label": "1D-Partikelsystem deaktivieren" },
-    { "flag": "WLED_DISABLE_PARTICLESYSTEM2D", "label": "2D-Partikelsystem deaktivieren" },
-    { "flag": "WLED_DISABLE_PIXELFORGE", "label": "PixelForge-Renderer deaktivieren" },
-    { "flag": "WLED_DISABLE_WEBSOCKETS", "label": "WebSockets deaktivieren" }
+    { "flag": "WLED_DISABLE_2D", "label": "Disable 2D matrix support" },
+    { "flag": "WLED_DISABLE_ADALIGHT", "label": "Disable Adalight protocol" },
+    { "flag": "WLED_DISABLE_ALEXA", "label": "Disable Amazon Alexa" },
+    { "flag": "WLED_DISABLE_BROWNOUT_DET", "label": "Disable brownout detector" },
+    { "flag": "WLED_DISABLE_ESPNOW", "label": "Disable ESP-NOW" },
+    { "flag": "WLED_DISABLE_FILESYSTEM", "label": "Disable filesystem" },
+    { "flag": "WLED_DISABLE_HUESYNC", "label": "Disable Philips Hue sync" },
+    { "flag": "WLED_DISABLE_IMPROV_WIFISCAN", "label": "Disable Improv WiFi scan" },
+    { "flag": "WLED_DISABLE_INFRARED", "label": "Disable infrared remote" },
+    { "flag": "WLED_DISABLE_LOXONE", "label": "Disable Loxone support" },
+    { "flag": "WLED_DISABLE_MQTT", "label": "Disable MQTT" },
+    { "flag": "WLED_DISABLE_OTA", "label": "Disable OTA updates" },
+    { "flag": "WLED_DISABLE_PARTICLESYSTEM1D", "label": "Disable 1D particle system" },
+    { "flag": "WLED_DISABLE_PARTICLESYSTEM2D", "label": "Disable 2D particle system" },
+    { "flag": "WLED_DISABLE_PIXELFORGE", "label": "Disable PixelForge renderer" },
+    { "flag": "WLED_DISABLE_WEBSOCKETS", "label": "Disable WebSockets" }
   ],
   "usermodCategories": [
-    { "id": "sensors", "label": "Sensoren" },
-    { "id": "display_clock", "label": "Display & Uhr" },
-    { "id": "io_control", "label": "IO / Steuerung / Automation" },
-    { "id": "network_misc", "label": "Netzwerk / Effekte / Sonstiges" }
+    { "id": "sensors", "label": "Sensors" },
+    { "id": "display_clock", "label": "Display & Clock" },
+    { "id": "io_control", "label": "IO / Control / Automation" },
+    { "id": "network_misc", "label": "Network / Effects / Misc" }
   ],
   "usermods": [
     { "id": "ADS1115_v2", "label": "ADS1115", "category": "sensors" },

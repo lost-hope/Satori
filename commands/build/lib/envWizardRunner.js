@@ -5,16 +5,16 @@ const envWizardUI = require('./envWizardUI');
 const buildRunner = require('./buildRunner');
 const buildQueue = require('./buildQueue');
 
-const SESSION_EXPIRED_MESSAGE = 'Session abgelaufen, bitte `/buildenv` erneut ausführen';
+const SESSION_EXPIRED_MESSAGE = 'Session expired, please run `/buildenv` again';
 
 /**
  * Components + content for the usermods step. Shared by every transition that (re-)renders this
  * step (entering it from "features", picking usermods within a category, and adding an external
- * usermod via the modal) so the "Eigene UserMods: ..." summary line never drifts out of sync.
+ * usermod via the modal) so the "Custom usermods: ..." summary line never drifts out of sync.
  */
 function buildUsermodsStepPayload(session) {
     return {
-        content: session.externalUsermods.length > 0 ? `Eigene UserMods: ${session.externalUsermods.join(', ')}` : '',
+        content: session.externalUsermods.length > 0 ? `Custom usermods: ${session.externalUsermods.join(', ')}` : '',
         embeds: [],
         components: [...envWizardUI.buildUsermodRows(session.selectedUsermods), envWizardUI.buildUsermodsNextRow()],
     };
@@ -126,12 +126,12 @@ async function handleComponent(interaction) {
 
     if (customId === 'envWizard:cancel') {
         clearSession(userId);
-        await interaction.update({ content: 'Abgebrochen.', embeds: [], components: [] });
+        await interaction.update({ content: 'Cancelled.', embeds: [], components: [] });
         return;
     }
 
     const unknownStepPayload = {
-        content: 'Unbekannter Schritt, bitte `/buildenv` erneut ausführen.',
+        content: 'Unknown step, please run `/buildenv` again.',
         embeds: [],
         components: [],
     };

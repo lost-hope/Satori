@@ -39,17 +39,17 @@ function buildSelectRow(customId, placeholder, options) {
 
 function buildBoardCategoryRow() {
     const options = catalog.getBoardCategories().map((category) => buildOption(category.id, category.label));
-    return buildSelectRow('envWizard:boardCategory', 'Board-Kategorie auswählen', options);
+    return buildSelectRow('envWizard:boardCategory', 'Select board category', options);
 }
 
 function buildBoardRow(categoryId) {
     const options = catalog.getBoardsByCategory(categoryId).map((board) => buildOption(board.id, board.label));
-    return buildSelectRow('envWizard:board', 'Board auswählen', options);
+    return buildSelectRow('envWizard:board', 'Select board', options);
 }
 
 function buildFeatureRow(selectedFlags) {
     const options = catalog.getFeatures().map((feature) => buildOption(feature.flag, feature.label, selectedFlags));
-    return buildSelectRow('envWizard:features', 'Features deaktivieren (optional)', options);
+    return buildSelectRow('envWizard:features', 'Disable features (optional)', options);
 }
 
 function buildUsermodRows(selectedUsermods) {
@@ -64,11 +64,11 @@ function buildUsermodRows(selectedUsermods) {
 function buildUsermodsNextRow() {
     const nextButton = new ButtonBuilder()
         .setCustomId('envWizard:usermodsNext')
-        .setLabel('Weiter')
+        .setLabel('Next')
         .setStyle(ButtonStyle.Primary);
     const addUsermodButton = new ButtonBuilder()
         .setCustomId('envWizard:addUsermod')
-        .setLabel('➕ Eigenes UserMod')
+        .setLabel('➕ Add Custom UserMod')
         .setStyle(ButtonStyle.Secondary);
     return new ActionRowBuilder().addComponents(nextButton, addUsermodButton);
 }
@@ -81,30 +81,30 @@ function buildUsermodsNextRow() {
 function buildAddUsermodModal() {
     const input = new TextInputBuilder()
         .setCustomId('envWizard:externalUsermodsInput')
-        .setLabel('Eigene UserMods (ein Eintrag pro Zeile)')
-        .setPlaceholder('mein-mod = https://github.com/<user>/mein-mod.git')
+        .setLabel('Custom usermods (one per line)')
+        .setPlaceholder('my-mod = https://github.com/<user>/my-mod.git')
         .setStyle(TextInputStyle.Paragraph)
         .setRequired(false);
     const row = new ActionRowBuilder().addComponents(input);
-    return new ModalBuilder().setCustomId('envWizard:addUsermodModal').setTitle('Eigenes UserMod hinzufügen').addComponents(row);
+    return new ModalBuilder().setCustomId('envWizard:addUsermodModal').setTitle('Add Custom UserMod').addComponents(row);
 }
 
 function buildReviewComponents(generatedIni) {
     const embed = new EmbedBuilder()
-        .setTitle('Build-Umgebung – Vorschau')
+        .setTitle('Build Environment – Preview')
         .setDescription(`\`\`\`ini\n${generatedIni}\n\`\`\``);
 
     const confirmButton = new ButtonBuilder()
         .setCustomId('envWizard:confirm')
-        .setLabel('Bestätigen')
+        .setLabel('✅ Start Build')
         .setStyle(ButtonStyle.Success);
     const restartButton = new ButtonBuilder()
         .setCustomId('envWizard:restart')
-        .setLabel('Neu starten')
+        .setLabel('✏️ Restart')
         .setStyle(ButtonStyle.Secondary);
     const cancelButton = new ButtonBuilder()
         .setCustomId('envWizard:cancel')
-        .setLabel('Abbrechen')
+        .setLabel('❌ Cancel')
         .setStyle(ButtonStyle.Danger);
 
     const row = new ActionRowBuilder().addComponents(confirmButton, restartButton, cancelButton);
