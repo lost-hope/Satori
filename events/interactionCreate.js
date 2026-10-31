@@ -68,6 +68,14 @@ module.exports = {
                     fs.appendFile('log.txt', error, function (err) { });
                     await interaction.reply({ content: 'There was an error while executing this input!', ephemeral: true });
                 }
+            } else if (interaction.customId === 'envWizard:addUsermodModal') {
+                const command = interaction.client.commands.get('buildenv');
+                try {
+                    await command.handleModalSubmit(interaction);
+                } catch (error) {
+                    console.error(error);
+                    fs.appendFile('log.txt', error, function (err) { });
+                }
             }
         } else if (interaction.isStringSelectMenu() || interaction.isButton()) {
             if (interaction.customId.startsWith('envWizard:')) {

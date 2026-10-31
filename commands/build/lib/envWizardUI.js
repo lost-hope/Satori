@@ -5,6 +5,9 @@ const {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle,
 } = require('discord.js');
 
 const catalog = require('./envWizardCatalog');
@@ -59,11 +62,31 @@ function buildUsermodRows(selectedUsermods) {
 }
 
 function buildUsermodsNextRow() {
-    const button = new ButtonBuilder()
+    const nextButton = new ButtonBuilder()
         .setCustomId('envWizard:usermodsNext')
         .setLabel('Weiter')
         .setStyle(ButtonStyle.Primary);
-    return new ActionRowBuilder().addComponents(button);
+    const addUsermodButton = new ButtonBuilder()
+        .setCustomId('envWizard:addUsermod')
+        .setLabel('➕ Eigenes UserMod')
+        .setStyle(ButtonStyle.Secondary);
+    return new ActionRowBuilder().addComponents(nextButton, addUsermodButton);
+}
+
+/**
+ * Modal for adding one or more out-of-tree usermods (e.g. "name = https://github.com/...").
+ * Submissions ADD to the session's existing external-usermod list - the field is intentionally
+ * always empty when opened, never pre-filled with what was already added.
+ */
+function buildAddUsermodModal() {
+    const input = new TextInputBuilder()
+        .setCustomId('envWizard:externalUsermodsInput')
+        .setLabel('Eigene UserMods (ein Eintrag pro Zeile)')
+        .setPlaceholder('mein-mod = https://github.com/<user>/mein-mod.git')
+        .setStyle(TextInputStyle.Paragraph)
+        .setRequired(false);
+    const row = new ActionRowBuilder().addComponents(input);
+    return new ModalBuilder().setCustomId('envWizard:addUsermodModal').setTitle('Eigenes UserMod hinzufügen').addComponents(row);
 }
 
 function buildReviewComponents(generatedIni) {
@@ -95,5 +118,6 @@ module.exports = {
     buildFeatureRow,
     buildUsermodRows,
     buildUsermodsNextRow,
+    buildAddUsermodModal,
     buildReviewComponents,
 };

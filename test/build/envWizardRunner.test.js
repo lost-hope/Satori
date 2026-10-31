@@ -4,13 +4,26 @@ const envWizardRunner = require('../../commands/build/lib/envWizardRunner');
 const { createSession, getSession, updateSession, clearSession } = require('../../commands/build/lib/envWizardState');
 
 function fakeInteraction({ customId, values = [], userId = 'u1' }) {
-  const calls = { update: null, reply: null };
+  const calls = { update: null, reply: null, showModal: null };
   return {
     customId,
     values,
     user: { id: userId },
     isStringSelectMenu: () => true,
-    isButton: () => customId === 'envWizard:usermodsNext' || ['envWizard:confirm', 'envWizard:restart', 'envWizard:cancel'].includes(customId),
+    isButton: () => customId === 'envWizard:usermodsNext' || ['envWizard:confirm', 'envWizard:restart', 'envWizard:cancel', 'envWizard:addUsermod'].includes(customId),
+    update: async (payload) => { calls.update = payload; },
+    reply: async (payload) => { calls.reply = payload; },
+    showModal: async (modal) => { calls.showModal = modal; },
+    _calls: calls,
+  };
+}
+
+function fakeModalInteraction({ text = '', userId = 'u1' }) {
+  const calls = { update: null, reply: null };
+  return {
+    customId: 'envWizard:addUsermodModal',
+    user: { id: userId },
+    fields: { getTextInputValue: () => text },
     update: async (payload) => { calls.update = payload; },
     reply: async (payload) => { calls.reply = payload; },
     _calls: calls,
@@ -95,4 +108,49 @@ test('handleComponent: cancel clears the session', async () => {
   createSession('u1', { branch: 'main' });
   await envWizardRunner.handleComponent(fakeInteraction({ customId: 'envWizard:cancel' }));
   assert.equal(getSession('u1'), null);
+});
+
+test('handleComponent: addUsermod opens the add-usermod modal instead of updating the message', async () => {
+  createSession('u1', { branch: 'main' });
+  const interaction = fakeInteraction({ customId: 'envWizard:addUsermod' });
+  await envWizardRunner.handleComponent(interaction);
+  assert.equal(interaction._calls.showModal.toJSON().custom_id, 'envWizard:addUsermodModal');
+  assert.equal(interaction._calls.update, null);
+  clearSession('u1');
+});
+
+test('handleComponent: usermodsNext includes externally added usermods in the generated ini', async () => {
+  createSession('u1', { branch: 'main' });
+  updateSession('u1', { boardId: 'esp32dev', selectedUsermods: [], externalUsermods: ['sensor-hub = https://github.com/lost-hope/sensor-hub.git'] });
+  await envWizardRunner.handleComponent(fakeInteraction({ customId: 'envWizard:usermodsNext' }));
+  assert.ok(getSession('u1').generatedIni.includes('sensor-hub = https://github.com/lost-hope/sensor-hub.git'));
+  clearSession('u1');
+});
+
+test('handleModalSubmit: adds new lines to externalUsermods and re-renders the usermods step with a summary', async () => {
+  createSession('u1', { branch: 'main' });
+  updateSession('u1', { boardId: 'esp32dev', selectedUsermods: ['audioreactive'] });
+  const interaction = fakeModalInteraction({ text: 'sensor-hub = https://github.com/lost-hope/sensor-hub.git\n\n' });
+  await envWizardRunner.handleModalSubmit(interaction);
+  assert.deepEqual(getSession('u1').externalUsermods, ['sensor-hub = https://github.com/lost-hope/sensor-hub.git']);
+  assert.ok(interaction._calls.update.content.includes('sensor-hub'));
+  clearSession('u1');
+});
+
+test('handleModalSubmit: appends to (not replaces) existing externalUsermods, deduping exact repeats', async () => {
+  createSession('u1', { branch: 'main' });
+  updateSession('u1', { boardId: 'esp32dev', externalUsermods: ['a-mod = https://github.com/x/a.git'] });
+  const interaction = fakeModalInteraction({ text: 'a-mod = https://github.com/x/a.git\nb-mod = https://github.com/x/b.git' });
+  await envWizardRunner.handleModalSubmit(interaction);
+  assert.deepEqual(
+    getSession('u1').externalUsermods.sort(),
+    ['a-mod = https://github.com/x/a.git', 'b-mod = https://github.com/x/b.git'].sort()
+  );
+  clearSession('u1');
+});
+
+test('handleModalSubmit: missing/expired session shows the re-run message instead of throwing', async () => {
+  const interaction = fakeModalInteraction({ text: 'x = y' });
+  await assert.doesNotReject(() => envWizardRunner.handleModalSubmit(interaction));
+  assert.ok(interaction._calls.update || interaction._calls.reply);
 });

@@ -22,4 +22,7 @@ module.exports = {
     async handleComponent(interaction) {
         await envWizardRunner.handleComponent(interaction);
     },
+    async handleModalSubmit(interaction) {
+        await envWizardRunner.handleModalSubmit(interaction);
+    },
 };

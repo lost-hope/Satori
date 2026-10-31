@@ -12,6 +12,7 @@ function createSession(userId, initial, ttlMs) {
     boardId: null,
     selectedFeatureFlags: [],
     selectedUsermods: [],
+    externalUsermods: [],
     generatedIni: null,
     expiresAt: Date.now() + ttl,
   };

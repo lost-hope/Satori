@@ -36,9 +36,19 @@ test('buildUsermodRows: one row per usermod category, pre-selected ids marked de
   assert.equal(audioreactive.default, true);
 });
 
-test('buildUsermodsNextRow: a single button with the expected customId', () => {
+test('buildUsermodsNextRow: "Weiter" and "eigenes UserMod hinzufügen" buttons, in that order', () => {
   const json = ui.buildUsermodsNextRow().toJSON();
   assert.equal(json.components[0].custom_id, 'envWizard:usermodsNext');
+  assert.equal(json.components[1].custom_id, 'envWizard:addUsermod');
+});
+
+test('buildAddUsermodModal: a modal with one paragraph text input for external usermod specs', () => {
+  const json = ui.buildAddUsermodModal().toJSON();
+  assert.equal(json.custom_id, 'envWizard:addUsermodModal');
+  const textInput = json.components[0].components[0];
+  assert.equal(textInput.custom_id, 'envWizard:externalUsermodsInput');
+  assert.equal(textInput.style, 2); // TextInputStyle.Paragraph
+  assert.equal(textInput.required, false);
 });
 
 test('buildReviewComponents: embed contains the ini, row has confirm/restart/cancel buttons', () => {

@@ -7,6 +7,19 @@ const buildQueue = require('./buildQueue');
 
 const SESSION_EXPIRED_MESSAGE = 'Session abgelaufen, bitte `/buildenv` erneut ausführen';
 
+/**
+ * Components + content for the usermods step. Shared by every transition that (re-)renders this
+ * step (entering it from "features", picking usermods within a category, and adding an external
+ * usermod via the modal) so the "Eigene UserMods: ..." summary line never drifts out of sync.
+ */
+function buildUsermodsStepPayload(session) {
+    return {
+        content: session.externalUsermods.length > 0 ? `Eigene UserMods: ${session.externalUsermods.join(', ')}` : '',
+        embeds: [],
+        components: [...envWizardUI.buildUsermodRows(session.selectedUsermods), envWizardUI.buildUsermodsNextRow()],
+    };
+}
+
 async function handleChatInput(interaction) {
     const { branch, error } = await buildRunner.resolveBranchOption(interaction);
 
@@ -53,10 +66,7 @@ async function handleComponent(interaction) {
 
     if (customId === 'envWizard:features') {
         updateSession(userId, { selectedFeatureFlags: interaction.values, step: 'usermods' });
-        const updated = getSession(userId);
-        await interaction.update({
-            components: [...envWizardUI.buildUsermodRows(updated.selectedUsermods), envWizardUI.buildUsermodsNextRow()],
-        });
+        await interaction.update(buildUsermodsStepPayload(getSession(userId)));
         return;
     }
 
@@ -66,9 +76,12 @@ async function handleComponent(interaction) {
         const retained = session.selectedUsermods.filter((id) => !categoryUsermodIds.includes(id));
         const selectedUsermods = [...retained, ...interaction.values];
         updateSession(userId, { selectedUsermods });
-        await interaction.update({
-            components: [...envWizardUI.buildUsermodRows(selectedUsermods), envWizardUI.buildUsermodsNextRow()],
-        });
+        await interaction.update(buildUsermodsStepPayload(getSession(userId)));
+        return;
+    }
+
+    if (customId === 'envWizard:addUsermod') {
+        await interaction.showModal(envWizardUI.buildAddUsermodModal());
         return;
     }
 
@@ -77,6 +90,7 @@ async function handleComponent(interaction) {
             boardId: session.boardId,
             selectedFeatureFlags: session.selectedFeatureFlags,
             selectedUsermods: session.selectedUsermods,
+            externalUsermods: session.externalUsermods,
         });
         updateSession(userId, { step: 'review', generatedIni });
         const { embed, row } = envWizardUI.buildReviewComponents(generatedIni);
@@ -128,6 +142,31 @@ async function handleComponent(interaction) {
     }
 }
 
+async function handleModalSubmit(interaction) {
+    const userId = interaction.user.id;
+    const session = getSession(userId);
+
+    if (!session) {
+        const payload = { content: SESSION_EXPIRED_MESSAGE, components: [], embeds: [] };
+        if (typeof interaction.update === 'function') {
+            await interaction.update(payload);
+        } else {
+            await interaction.reply(payload);
+        }
+        return;
+    }
+
+    const rawText = interaction.fields.getTextInputValue('envWizard:externalUsermodsInput');
+    const newLines = rawText
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+    const externalUsermods = Array.from(new Set([...session.externalUsermods, ...newLines]));
+
+    updateSession(userId, { externalUsermods });
+    await interaction.update(buildUsermodsStepPayload(getSession(userId)));
+}
+
 async function safeEditReply(interaction, payload) {
     try {
         await interaction.editReply(payload);
@@ -136,4 +175,4 @@ async function safeEditReply(interaction, payload) {
     }
 }
 
-module.exports = { handleChatInput, handleComponent };
+module.exports = { handleChatInput, handleComponent, handleModalSubmit };

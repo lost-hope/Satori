@@ -9,6 +9,7 @@ test('createSession seeds defaults and getSession returns them', () => {
   assert.equal(session.step, 'boardCategory');
   assert.deepEqual(session.selectedFeatureFlags, []);
   assert.deepEqual(session.selectedUsermods, []);
+  assert.deepEqual(session.externalUsermods, []);
   clearSession('u1');
 });
 

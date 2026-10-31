@@ -1,6 +1,6 @@
 const DEFAULT_ENV_NAME = 'custom_build';
 
-function generateEnvIni({ boardId, selectedFeatureFlags, selectedUsermods, envName } = {}) {
+function generateEnvIni({ boardId, selectedFeatureFlags, selectedUsermods, externalUsermods, envName } = {}) {
     // Validate required parameter
     if (!boardId) {
         throw new Error('boardId is required');
@@ -15,10 +15,17 @@ function generateEnvIni({ boardId, selectedFeatureFlags, selectedUsermods, envNa
         `extends = env:${boardId}`,
     ];
 
-    // Process usermods: dedupe and sort
-    if (selectedUsermods && selectedUsermods.length > 0) {
-        const deduped = Array.from(new Set(selectedUsermods)).sort();
-        lines.push(`custom_usermods = ${deduped.join(' ')}`);
+    // Process usermods: catalog ("bare") usermods share one line, dedupe and sort; each external
+    // usermod (a "name = url"/URL/owner-repo spec) needs its OWN continuation line - the sanitizer
+    // classifies a custom_usermods line as either entirely bare tokens or exactly one external
+    // entry, never a mix, so a bare token and an external spec can never share a line.
+    const bareUsermods = selectedUsermods ? Array.from(new Set(selectedUsermods)).sort() : [];
+    const externals = externalUsermods ? Array.from(new Set(externalUsermods)).sort() : [];
+    if (bareUsermods.length > 0 || externals.length > 0) {
+        lines.push(`custom_usermods = ${bareUsermods.join(' ')}`);
+        for (const external of externals) {
+            lines.push(`\t${external}`);
+        }
     }
 
     // Process feature flags: dedupe, sort, and add with inheritance of board build_flags
