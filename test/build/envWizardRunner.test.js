@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const envWizardRunner = require('../../commands/build/lib/envWizardRunner');
-const { createSession, getSession, clearSession } = require('../../commands/build/lib/envWizardState');
+const { createSession, getSession, updateSession, clearSession } = require('../../commands/build/lib/envWizardState');
 
 function fakeInteraction({ customId, values = [], userId = 'u1' }) {
   const calls = { update: null, reply: null };
@@ -34,14 +34,16 @@ test('handleComponent: picking a board pre-selects its default usermods', async 
 });
 
 test('handleComponent: usermod selections from different category menus accumulate, not overwrite', async () => {
-  createSession('u1', { branch: 'main', boardId: 'esp32dev', selectedUsermods: ['audioreactive'] });
+  createSession('u1', { branch: 'main' });
+  updateSession('u1', { boardId: 'esp32dev', selectedUsermods: ['audioreactive'] });
   await envWizardRunner.handleComponent(fakeInteraction({ customId: 'envWizard:usermods:sensors', values: ['BME280_v2'] }));
   assert.deepEqual(getSession('u1').selectedUsermods.sort(), ['BME280_v2', 'audioreactive'].sort());
   clearSession('u1');
 });
 
 test('handleComponent: deselecting a board-default usermod removes it from the session', async () => {
-  createSession('u1', { branch: 'main', boardId: 'esp32dev', selectedUsermods: ['audioreactive'] });
+  createSession('u1', { branch: 'main' });
+  updateSession('u1', { boardId: 'esp32dev', selectedUsermods: ['audioreactive'] });
   await envWizardRunner.handleComponent(fakeInteraction({ customId: 'envWizard:usermods:network_misc', values: [] }));
   assert.deepEqual(getSession('u1').selectedUsermods, []);
   clearSession('u1');
@@ -54,7 +56,8 @@ test('handleComponent: an expired/missing session shows an error instead of thro
 });
 
 test('handleComponent: confirm enqueues a build via buildQueue.enqueue, running buildRunner.runOneBuild with the session\'s ini/branch, and clears the session', async () => {
-  createSession('u1', { branch: 'main', boardId: 'esp32dev', selectedUsermods: ['audioreactive'], generatedIni: '[env:custom_build]\nextends = env:esp32dev\n' });
+  createSession('u1', { branch: 'main' });
+  updateSession('u1', { boardId: 'esp32dev', selectedUsermods: ['audioreactive'], generatedIni: '[env:custom_build]\nextends = env:esp32dev\n' });
   const buildQueue = require('../../commands/build/lib/buildQueue');
   const buildRunner = require('../../commands/build/lib/buildRunner');
   const originalEnqueue = buildQueue.enqueue;
@@ -77,7 +80,8 @@ test('handleComponent: confirm enqueues a build via buildQueue.enqueue, running 
 });
 
 test('handleComponent: restart clears selections but keeps the branch, re-showing the board-category step', async () => {
-  createSession('u1', { branch: 'main', boardId: 'esp32dev', selectedUsermods: ['audioreactive'] });
+  createSession('u1', { branch: 'main' });
+  updateSession('u1', { boardId: 'esp32dev', selectedUsermods: ['audioreactive'] });
   const interaction = fakeInteraction({ customId: 'envWizard:restart' });
   await envWizardRunner.handleComponent(interaction);
   const session = getSession('u1');
